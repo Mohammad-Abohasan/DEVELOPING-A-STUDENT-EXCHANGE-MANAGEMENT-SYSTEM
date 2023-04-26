@@ -2,13 +2,9 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/database");
 
 const User = sequelize.define("user", {
-  id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
   username: {
     type: Sequelize.STRING,
+    primaryKey: true,
     allowNull: false
   },
   password: {
@@ -17,11 +13,7 @@ const User = sequelize.define("user", {
   },
   role: {
     type: Sequelize.STRING,
-    allowNull: false
-  },
-  name: {
-    type: Sequelize.STRING,
-    allowNull: true,
+    allowNull: false,
   },
   status: {
     type: Sequelize.STRING,
@@ -30,7 +22,7 @@ const User = sequelize.define("user", {
   },
   avatar: {
     type: Sequelize.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
 });
 
