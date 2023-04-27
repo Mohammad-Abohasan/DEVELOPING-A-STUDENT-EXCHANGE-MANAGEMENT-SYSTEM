@@ -8,7 +8,7 @@ const Request = sequelize.define("request", {
         autoIncrement: true
     },
     request_date: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false
     },
     status: {

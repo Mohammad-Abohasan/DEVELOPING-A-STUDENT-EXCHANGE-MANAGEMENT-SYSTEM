@@ -8,7 +8,7 @@ const Offer = sequelize.define("offer", {
     autoIncrement: true,
   },
   offer_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   university_id_src: {
@@ -28,11 +28,11 @@ const Offer = sequelize.define("offer", {
     allowNull: true,
   },
   train_start_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   train_end_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   support_amount: {
@@ -136,7 +136,7 @@ const Offer = sequelize.define("offer", {
     allowNull: false,
   },
   receive_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
 }, {
