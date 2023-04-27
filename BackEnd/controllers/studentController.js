@@ -8,9 +8,9 @@ const { fn, col } = require('sequelize');
 const viewRequests = async (req, res) => {
     try {
         const username = req.user;
-        const user= await User.findOne({ where: { username } });
-        const student_id = user.ID;
-        const requests = await Request.findAll({ where: { studentID:student_id} });
+        const student= await Student.findOne({ where: { username } });
+        const student_id = student.ID;
+        const requests = await Request.findAll({ where: {student_id} });
         return res.status(200).json(requests);
     } catch (err) {
         res.status(500).json({ 'message': err.message });
@@ -38,9 +38,7 @@ const cancelRequest = async (req, res) => {
 const viewAvailableOffers = async (req, res) => {
     try {
         const username = req.user;  
-        const user= await User.findOne({ where: { username } });
-        const student_id = user.ID;
-        const student= await Student.findOne({ where: { ID: student_id } });
+        const student= await Student.findOne({ where: { username } });
         const student_major = student.major;
 
         const availableOffers = await Offer.findAll({
