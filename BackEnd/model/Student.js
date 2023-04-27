@@ -11,14 +11,6 @@ const Student = sequelize.define("student", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  userName: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
   gpa: {
     type: Sequelize.FLOAT,
     allowNull: false,
@@ -64,7 +56,7 @@ const Student = sequelize.define("student", {
     allowNull: true,
   },
   birthDate: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   university: {
@@ -83,6 +75,6 @@ const Student = sequelize.define("student", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-});
+},{timestamps: false});
 
 module.exports = Student;

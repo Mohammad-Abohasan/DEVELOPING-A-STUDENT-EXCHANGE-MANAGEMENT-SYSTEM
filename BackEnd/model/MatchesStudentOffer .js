@@ -15,6 +15,6 @@ const MatchesStudentOffer = sequelize.define('matchesStudentOffer', {
         type: Sequelize.INTEGER,
         allowNull: false
     }
-});
+},{timestamps: false});
 
 module.exports = MatchesStudentOffer;

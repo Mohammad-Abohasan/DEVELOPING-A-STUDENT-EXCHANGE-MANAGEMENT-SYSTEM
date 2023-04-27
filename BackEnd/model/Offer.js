@@ -28,11 +28,11 @@ const Offer = sequelize.define("offer", {
     allowNull: true,
   },
   train_start_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   train_end_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   support_amount: {
@@ -139,7 +139,7 @@ const Offer = sequelize.define("offer", {
     type: Sequelize.DATE,
     allowNull: true,
   },
-});
+},{timestamps: false});
 
 // Offer.addIndex("id", {
 //   type: "PRIMARY",
