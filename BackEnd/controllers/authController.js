@@ -9,7 +9,13 @@ const handleLogin = async (req, res) => {
     if (!username || !password) {
         return res.status(400).json({ 'message': 'Username and password are required.' });
     }
-    const foundUser = await User.findOne({ where: { username: username } });
+    const foundUser = await User.findOne({ 
+        where: { 
+            username: username 
+        } 
+    });
+    console.log(foundUser.password);
+    console.log(password);
     if (!foundUser) {
         return res.sendStatus(401); // Unauthorized
     }

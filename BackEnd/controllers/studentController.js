@@ -10,7 +10,7 @@ const viewRequests = async (req, res) => {
         const username = req.user;
         const student = await Student.findOne({ 
             where: { 
-                username 
+                username
             } 
         });
         const requests = await Request.findAll({ 
@@ -56,7 +56,7 @@ const viewAvailableOffers = async (req, res) => {
         const availableOffers = await Offer.findAll({
             where: {
                 offer_date: {
-                    [Op.lte]: fn('CURDATE')
+                    [Op.gte]: fn('CURDATE')
                 },
                 stu_sex: student.gender,
                 major_name: student.major,

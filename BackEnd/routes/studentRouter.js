@@ -5,7 +5,7 @@ const verifyJWT = require('../middleware/verifyJWT');
 
 router.get('/requests', verifyJWT, studentController.viewRequests);
 router.post('/cancelRequest', studentController.cancelRequest);
-router.get('/availableRequest', verifyJWT, studentController.viewAvailableOffers);
-router.get('/submitOffer', verifyJWT, studentController.submitOffer);
+router.get('/availableOffers', verifyJWT, studentController.viewAvailableOffers);
+router.post('/submitOffer', verifyJWT, studentController.submitOffer);
 
 module.exports = router;
