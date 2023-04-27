@@ -2,20 +2,12 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/database");
 
 const Student = sequelize.define("student", {
-  ID: {
+  id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
   name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  userName: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  password: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -27,7 +19,7 @@ const Student = sequelize.define("student", {
     type: Sequelize.STRING(10),
     allowNull: false,
   },
-  totalCreditHours: {
+  total_credit_hours: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
@@ -35,11 +27,15 @@ const Student = sequelize.define("student", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  studyYear: {
+  study_year: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
   nationality: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  status: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -55,15 +51,15 @@ const Student = sequelize.define("student", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  english101Mark: {
+  english_1_mark: {
     type: Sequelize.INTEGER,
     allowNull: true,
   },
-  english102Mark: {
+  english_2_mark: {
     type: Sequelize.INTEGER,
     allowNull: true,
   },
-  birthDate: {
+  birth_date: {
     type: Sequelize.DATE,
     allowNull: true,
   },
@@ -79,10 +75,12 @@ const Student = sequelize.define("student", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  birthPlace: {
+  birth_place: {
     type: Sequelize.STRING,
     allowNull: false,
   },
+}, {
+  timestamps: false
 });
 
 module.exports = Student;

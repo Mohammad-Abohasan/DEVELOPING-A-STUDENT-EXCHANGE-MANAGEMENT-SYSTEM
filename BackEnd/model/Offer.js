@@ -139,27 +139,9 @@ const Offer = sequelize.define("offer", {
     type: Sequelize.DATE,
     allowNull: true,
   },
+}, {
+  timestamps: false
 });
 
-// Offer.addIndex("id", {
-//   type: "PRIMARY",
-//   name: "primary_key_id",
-//   fields: ["id"],
-// });
-
-// Offer.addIndex("university_id_src", {
-//   name: "university_id_src_index",
-//   fields: ["university_id_src"],
-// });
-
-// Offer.addIndex("university_id_des", {
-//   name: "university_id_des_index",
-//   fields: ["university_id_des"],
-// });
-
-// Offer.addIndex("user_id", {
-//   name: "user_id_index",
-//   fields: ["user_id"],
-// });
 
 module.exports = Offer;
