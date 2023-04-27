@@ -7,76 +7,80 @@ const Student = sequelize.define("student", {
     primaryKey: true,
     autoIncrement: true,
   },
-  city_id: {
-    type: Sequelize.STRING(255),
+  name: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  university_id: {
-    type: Sequelize.INTEGER,
+  userName: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  college: {
-    type: Sequelize.STRING(255),
+  password: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  universityMajor: {
-    type: Sequelize.STRING(255),
-    allowNull: false,
-  },
-  birthPlace: {
-    type: Sequelize.STRING(255),
+  gpa: {
+    type: Sequelize.FLOAT,
     allowNull: false,
   },
   gender: {
     type: Sequelize.STRING(10),
     allowNull: false,
   },
-  passportExpiryDate: {
-    type: Sequelize.DATE,
-    allowNull: true,
-  },
-  phone: {
-    type: Sequelize.STRING(11),
+  totalCreditHours: {
+    type: Sequelize.INTEGER,
     allowNull: false,
   },
   email: {
-    type: Sequelize.STRING(255),
+    type: Sequelize.STRING,
     allowNull: false,
+  },
+  studyYear: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  nationality: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  address: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  city: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  english101Mark: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
+  },
+  english102Mark: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
   },
   birthDate: {
     type: Sequelize.DATE,
     allowNull: true,
   },
-  address: {
-    type: Sequelize.STRING(255),
+  university: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  passportNumber: {
-    type: Sequelize.STRING(255),
+  college: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  healthStatus: {
-    type: Sequelize.STRING(255),
+  major: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  studyYearFinished: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  studyYears: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  fluencyInEnglish: {
-    type: Sequelize.STRING(255),
-    allowNull: false,
-  },
-  totalCreditHours: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  name: {
-    type: Sequelize.STRING(255),
+  birthPlace: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
 });

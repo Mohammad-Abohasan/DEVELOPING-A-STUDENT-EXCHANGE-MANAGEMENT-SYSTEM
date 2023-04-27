@@ -20,7 +20,7 @@ const Request = sequelize.define("request", {
         allowNull: false
     },
     status: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false
     },
     notes: {
