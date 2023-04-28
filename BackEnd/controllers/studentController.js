@@ -232,11 +232,7 @@ const updateInterest = async (req, res) => {
 const cancelInterest = async (req, res) => {
     try {
         const interestID = req.body.interest_id;
-        const setting = await Settings.findOne({
-            where: {
-                id: interestID
-            }
-        });
+        const setting = await Settings.findByPk(interestID);
         if (!setting) {
             return res.status(200).json({
                 'message': 'Interest not found'

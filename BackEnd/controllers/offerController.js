@@ -4,50 +4,48 @@ const Offer = require("../model/Offer");
 const { Op } = require('sequelize');
 const { fn, col } = require('sequelize');
 
-const addNotes = async (req, res) => {
+const updateNotesByType = async (req, res, updateType) => {
     try {
         const requestID = req.body.request_id;
         const notes = req.body.notes;
-        const request = await Request.findByPK(requestID);
-        await request.update(notes);
-        return res.status(200).json({
-            'message': 'Notes added successfully 🙂'
+        const request = await Request.findByPk(requestID);
+        await request.update({ notes });
+        let message = '';
+        if (updateType === 'Add') {
+            message = 'Notes added successfully 🙂';
+        } else if (updateType === 'Edit') {
+            message = 'Notes edited successfully 🙂';
+        }
+        await res.status(200).json({
+            'message': message,
         });
     } catch (err) {
         res.status(500).json({
             'message': err.message
         });
     }
+}
+
+const addNotes = async (req, res) => {
+    await updateNotesByType(req, res, 'Add');
 }
 
 const editNotes = async (req, res) => {
-    try {
-        const requestID = req.body.request_id;
-        const notes = req.body.notes;
-        const request = await Request.findByPK(requestID);
-        await request.update(notes);
-        return res.status(200).json({
-            'message': 'Notes updated successfully 🙂'
-        });
-    } catch (err) {
-        res.status(500).json({
-            'message': err.message
-        });
-    }
+    await updateNotesByType(req, res, 'Edit');
 }
 
-const getOffersByType = async (req, res) => {
+const getOffersByType = async (req, res, offerType) => {
     try {
         const whereClause = {};
         let message = '';
-        if (category === 'Published') {
+        if (offerType === 'Published') {
             whereClause = {
                 offer_date: {
                     [Op.gt]: fn('CURDATE')
                 },
             };
             message = 'Published Offers';
-        } else if (category === 'Pending') {
+        } else if (offerType === 'Pending') {
             whereClause = {
                 offer_date: {
                     [Op.lte]: fn('CURDATE')
@@ -55,7 +53,7 @@ const getOffersByType = async (req, res) => {
                 user_id: null
             };
             message = 'Pending Offers';
-        } else if (category === 'Archived') {
+        } else if (offerType === 'Archived') {
             whereClause = {
                 offer_date: {
                     [Op.lte]: fn('CURDATE')
