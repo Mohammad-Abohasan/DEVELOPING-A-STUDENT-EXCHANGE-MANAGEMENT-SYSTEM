@@ -19,7 +19,8 @@ const Request = sequelize.define("request", {
         type: Sequelize.STRING,
         allowNull: true
     }
-}
-);
+}, {
+    timestamps: false
+});
 
 module.exports = Request;
