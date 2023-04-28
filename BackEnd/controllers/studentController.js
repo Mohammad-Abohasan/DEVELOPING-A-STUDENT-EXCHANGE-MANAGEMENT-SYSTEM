@@ -30,16 +30,6 @@ const cancelRequest = async (req, res) => {
     try {
         const requestID = req.body.request_id;
         const request = await Request.findByPk(requestID);
-        if (!request) {
-            return res.status(200).json({
-                'message': 'Request not found'
-            });
-        }
-        if (request.status === 'Cancelled') {
-            return res.status(200).json({
-                'message': 'Request already cancelled'
-            });
-        }
         await request.update({
             status: 'Cancelled'
         });

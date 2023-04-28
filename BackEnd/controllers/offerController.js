@@ -9,11 +9,6 @@ const addNotes = async (req, res) => {
         const requestID = req.body.request_id;
         const notes = req.body.notes;
         const request = await Request.findByPK(requestID);
-        if (!request) {
-            return res.status(200).json({
-                'message': 'Request not found'
-            });
-        }
         await request.update(notes);
         return res.status(200).json({
             'message': 'Notes added successfully 🙂'
@@ -30,11 +25,6 @@ const editNotes = async (req, res) => {
         const requestID = req.body.request_id;
         const notes = req.body.notes;
         const request = await Request.findByPK(requestID);
-        if (!request) {
-            return res.status(200).json({
-                'message': 'Request not found'
-            });
-        }
         await request.update(notes);
         return res.status(200).json({
             'message': 'Notes updated successfully 🙂'
@@ -46,16 +36,43 @@ const editNotes = async (req, res) => {
     }
 }
 
-const viewPublishedOffers = async (req, res) => {
+const getOffersByType = async (req, res) => {
     try {
-        const publishedOffers = await Offer.findAll({
-            where: {
+        const whereClause = {};
+        let message = '';
+        if (category === 'Published') {
+            whereClause = {
                 offer_date: {
-                    [Op.gte]: fn('CURDATE')
+                    [Op.gt]: fn('CURDATE')
                 },
-            }
+            };
+            message = 'Published Offers';
+        } else if (category === 'Pending') {
+            whereClause = {
+                offer_date: {
+                    [Op.lte]: fn('CURDATE')
+                },
+                user_id: null
+            };
+            message = 'Pending Offers';
+        } else if (category === 'Archived') {
+            whereClause = {
+                offer_date: {
+                    [Op.lte]: fn('CURDATE')
+                },
+                user_id: {
+                    [Op.not]: null
+                }
+            };
+            message = 'Archived Offers';
+        }
+        const offers = await Offer.findAll({
+            where: whereClause
         });
-        await res.status(200).json(publishedOffers);
+        await res.status(200).json({
+            'message': message,
+            'data': offers
+        });
     } catch (err) {
         res.status(500).json({
             'message': err.message
@@ -63,26 +80,23 @@ const viewPublishedOffers = async (req, res) => {
     }
 }
 
-const viewArchivedOffers = async (req, res) => {
-    try {
-        const archivedOffers = await Offer.findAll({
-            where: {
-                offer_date: {
-                    [Op.lt]: fn('CURDATE')
-                },
-            }
-        });
-        await res.status(200).json(archivedOffers);
-    } catch (err) {
-        res.status(500).json({
-            'message': err.message
-        });
-    }
+const viewPublishedOffers = async (req, res) => {
+    await getOffersByType(req, res, 'Published');
 }
+
+const viewPendingOffers = async (req, res) => {
+    await getOffersByType(req, res, 'Pending');
+}
+
+const viewArchivedOffers = async (req, res) => {
+    await getOffersByType(req, res, 'Archived');
+}
+
 
 module.exports = {
     addNotes,
     editNotes,
     viewPublishedOffers,
+    viewPendingOffers,
     viewArchivedOffers
 };

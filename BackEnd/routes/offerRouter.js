@@ -8,6 +8,7 @@ const verifyJWT = require('../middleware/verifyJWT');
 router.post('/addNotes', offerController.addNotes);
 router.patch('/editNotes', offerController.editNotes);
 router.get('/publishedOffers', offerController.viewPublishedOffers);
+router.get('/pendingOffers', offerController.viewPendingOffers);
 router.get('/archivedOffers', offerController.viewArchivedOffers);
 
 module.exports = router;
