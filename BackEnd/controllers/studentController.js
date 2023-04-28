@@ -29,11 +29,7 @@ const viewRequests = async (req, res) => {
 const cancelRequest = async (req, res) => {
     try {
         const requestID = req.body.request_id;
-        const request = await Request.findOne({
-            where: {
-                id: requestID
-            }
-        });
+        const request = await Request.findByPk(requestID);
         if (!request) {
             return res.status(200).json({
                 'message': 'Request not found'
