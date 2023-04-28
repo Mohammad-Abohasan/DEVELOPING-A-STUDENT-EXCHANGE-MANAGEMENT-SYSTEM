@@ -4,9 +4,20 @@ const Offer = require("../model/Offer");
 const { Op } = require('sequelize');
 const { fn, col } = require('sequelize');
 
-const addNote = async (req, res) => {
+const addNotes = async (req, res) => {
     try {
-        
+        const requestID = req.body.request_id;
+        const notes = req.body.notes;
+        const request = await Request.findByPK(requestID);
+        if (!request) {
+            return res.status(200).json({
+                'message': 'Request not found'
+            });
+        }
+        await request.update(notes);
+        return res.status(200).json({
+            'message': 'Notes added successfully 🙂'
+        });
     } catch (err) {
         res.status(500).json({
             'message': err.message
@@ -14,9 +25,20 @@ const addNote = async (req, res) => {
     }
 }
 
-const editNote = async (req, res) => {
+const editNotes = async (req, res) => {
     try {
-        
+        const requestID = req.body.request_id;
+        const notes = req.body.notes;
+        const request = await Request.findByPK(requestID);
+        if (!request) {
+            return res.status(200).json({
+                'message': 'Request not found'
+            });
+        }
+        await request.update(notes);
+        return res.status(200).json({
+            'message': 'Notes updated successfully 🙂'
+        });
     } catch (err) {
         res.status(500).json({
             'message': err.message
@@ -59,8 +81,8 @@ const viewArchivedOffers = async (req, res) => {
 }
 
 module.exports = {
-    addNote,
-    editNote,
+    addNotes,
+    editNotes,
     viewPublishedOffers,
     viewArchivedOffers
 };
