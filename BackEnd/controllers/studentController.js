@@ -2,7 +2,6 @@ const Settings = require("../model/Settings");
 const Student = require("../model/Student");
 const Request = require("../model/Request");
 const Offer = require("../model/Offer");
-const User = require("../model/User");
 const { Op } = require('sequelize');
 const { fn, col } = require('sequelize');
 
