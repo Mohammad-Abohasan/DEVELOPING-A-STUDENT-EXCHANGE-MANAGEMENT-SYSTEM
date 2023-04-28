@@ -8,7 +8,7 @@ const Offer = sequelize.define("offer", {
     autoIncrement: true,
   },
   offer_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   university_id_src: {
@@ -28,11 +28,11 @@ const Offer = sequelize.define("offer", {
     allowNull: true,
   },
   train_start_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   train_end_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
   support_amount: {
@@ -136,30 +136,12 @@ const Offer = sequelize.define("offer", {
     allowNull: false,
   },
   receive_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     allowNull: true,
   },
+}, {
+  timestamps: false
 });
 
-// Offer.addIndex("id", {
-//   type: "PRIMARY",
-//   name: "primary_key_id",
-//   fields: ["id"],
-// });
-
-// Offer.addIndex("university_id_src", {
-//   name: "university_id_src_index",
-//   fields: ["university_id_src"],
-// });
-
-// Offer.addIndex("university_id_des", {
-//   name: "university_id_des_index",
-//   fields: ["university_id_des"],
-// });
-
-// Offer.addIndex("user_id", {
-//   name: "user_id_index",
-//   fields: ["user_id"],
-// });
 
 module.exports = Offer;

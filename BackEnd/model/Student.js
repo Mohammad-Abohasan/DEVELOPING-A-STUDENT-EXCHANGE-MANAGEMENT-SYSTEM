@@ -2,83 +2,85 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/database");
 
 const Student = sequelize.define("student", {
-  ID: {
+  id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  city_id: {
-    type: Sequelize.STRING(255),
+  name: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  university_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
-  college: {
-    type: Sequelize.STRING(255),
-    allowNull: false,
-  },
-  universityMajor: {
-    type: Sequelize.STRING(255),
-    allowNull: false,
-  },
-  birthPlace: {
-    type: Sequelize.STRING(255),
+  gpa: {
+    type: Sequelize.FLOAT,
     allowNull: false,
   },
   gender: {
     type: Sequelize.STRING(10),
     allowNull: false,
   },
-  passportExpiryDate: {
-    type: Sequelize.DATE,
-    allowNull: true,
-  },
-  phone: {
-    type: Sequelize.STRING(11),
+  total_credit_hours: {
+    type: Sequelize.INTEGER,
     allowNull: false,
   },
   email: {
-    type: Sequelize.STRING(255),
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  birthDate: {
-    type: Sequelize.DATE,
-    allowNull: true,
+  study_year: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  nationality: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  status: {
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   address: {
-    type: Sequelize.STRING(255),
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  passportNumber: {
-    type: Sequelize.STRING(255),
+  phone: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  healthStatus: {
-    type: Sequelize.STRING(255),
+  city: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  studyYearFinished: {
+  english_1_mark: {
     type: Sequelize.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
-  studyYears: {
+  english_2_mark: {
     type: Sequelize.INTEGER,
+    allowNull: true,
+  },
+  birth_date: {
+    type: Sequelize.DATEONLY,
+    allowNull: true,
+  },
+  university: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  fluencyInEnglish: {
-    type: Sequelize.STRING(255),
+  college: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  totalCreditHours: {
-    type: Sequelize.INTEGER,
+  major: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
-  name: {
-    type: Sequelize.STRING(255),
+  birth_place: {
+    type: Sequelize.STRING,
     allowNull: false,
   },
+}, {
+  timestamps: false
 });
 
 module.exports = Student;

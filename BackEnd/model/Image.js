@@ -11,12 +11,8 @@ const Image = sequelize.define("image", {
     type: Sequelize.TEXT,
     allowNull: false,
   },
+}, {
+  timestamps: false
 });
-
-// Image.addIndex("id", {
-//   type: "PRIMARY",
-//   name: "primary_key_id",
-//   fields: ["id"],
-// });
 
 module.exports = Image;
