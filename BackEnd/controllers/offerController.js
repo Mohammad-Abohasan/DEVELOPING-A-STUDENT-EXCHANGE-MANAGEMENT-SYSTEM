@@ -26,7 +26,14 @@ const editNote = async (req, res) => {
 
 const viewPublishedOffers = async (req, res) => {
     try {
-        
+        const publishedOffers = await Offer.findAll({
+            where: {
+                offer_date: {
+                    [Op.gte]: fn('CURDATE')
+                },
+            }
+        });
+        await res.status(200).json(publishedOffers);
     } catch (err) {
         res.status(500).json({
             'message': err.message
@@ -36,7 +43,14 @@ const viewPublishedOffers = async (req, res) => {
 
 const viewArchivedOffers = async (req, res) => {
     try {
-        
+        const archivedOffers = await Offer.findAll({
+            where: {
+                offer_date: {
+                    [Op.lt]: fn('CURDATE')
+                },
+            }
+        });
+        await res.status(200).json(archivedOffers);
     } catch (err) {
         res.status(500).json({
             'message': err.message
