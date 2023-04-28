@@ -90,11 +90,84 @@ const viewArchivedOffers = async (req, res) => {
     await getOffersByType(req, res, 'Archived');
 }
 
+const viewStudentList = async (req, res) => {
+    try {
+        const offerID = req.body.offer_id;
+        const requests = await Request.findAll({
+            where: {
+                offer_id: offerID
+            },
+            include: [
+                {
+                    model: Student,
+                    attributes: ['name', 'gpa', 'major', 'english_1_mark', 'english_2_mark']
+                }
+            ]
+        });
+        await res.status(200).json(requests);
+    } catch (err) {
+        res.status(500).json({
+            'message': err.message
+        });
+    }
+}
+
+const viewStudentArchive = async (req, res) => {
+    try {
+        const studentID = req.body.student_id;
+        const studentArchive = await Request.findAll({
+            where: {
+                student_id: studentID
+            },
+            include: [
+                {
+                    model: Offer,
+                }
+            ]
+        });
+        await res.status(200).json(studentArchive);
+    } catch (err) {
+        res.status(500).json({
+            'message': err.message
+        });
+    }
+}
+
+const assignStudent = async (req, res) => {
+    // view published offer -> choose offer -> view list of student -> choose student
+    try {
+        const requestID = req.body.request_id;
+        const request = await Request.findByPk(requestID);
+        await Request.update({ status: 'Rejected' }, {
+            where: {
+                offer_id: request.offer_id
+            }
+        });
+        await request.update({ status: 'Accepted' }, {
+            where: {
+                offer_id: request.offer_id,
+                student_id: request.student_id
+            }
+        });
+        const offer = await Offer.findByPk(request.offer_id);
+        await offer.update({ user_id: request.student_id });
+        await res.status(200).json({
+            'message': 'Offer assigned to student successfully'
+        });
+    } catch (err) {
+        res.status(500).json({
+            'message': err.message
+        });
+    }
+}
 
 module.exports = {
     addNotes,
     editNotes,
     viewPublishedOffers,
     viewPendingOffers,
-    viewArchivedOffers
+    viewArchivedOffers,
+    viewStudentList,
+    viewStudentArchive,
+    assignStudent
 };
