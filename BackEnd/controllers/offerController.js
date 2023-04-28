@@ -36,7 +36,7 @@ const editNotes = async (req, res) => {
 
 const getOffersByType = async (req, res, offerType) => {
     try {
-        const whereClause = {};
+        let whereClause = {};
         let message = '';
         if (offerType === 'Published') {
             whereClause = {
