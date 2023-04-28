@@ -2,7 +2,6 @@ const Settings = require("../model/Settings");
 const Student = require("../model/Student");
 const Request = require("../model/Request");
 const Offer = require("../model/Offer");
-const User = require("../model/User");
 const { Op } = require('sequelize');
 const { fn, col } = require('sequelize');
 
@@ -30,21 +29,7 @@ const viewRequests = async (req, res) => {
 const cancelRequest = async (req, res) => {
     try {
         const requestID = req.body.request_id;
-        const request = await Request.findOne({
-            where: {
-                id: requestID
-            }
-        });
-        if (!request) {
-            return res.status(200).json({
-                'message': 'Request not found'
-            });
-        }
-        if (request.status === 'Cancelled') {
-            return res.status(200).json({
-                'message': 'Request already cancelled'
-            });
-        }
+        const request = await Request.findByPk(requestID);
         await request.update({
             status: 'Cancelled'
         });
@@ -247,11 +232,7 @@ const updateInterest = async (req, res) => {
 const cancelInterest = async (req, res) => {
     try {
         const interestID = req.body.interest_id;
-        const setting = await Settings.findOne({
-            where: {
-                id: interestID
-            }
-        });
+        const setting = await Settings.findByPk(interestID);
         if (!setting) {
             return res.status(200).json({
                 'message': 'Interest not found'
@@ -269,44 +250,66 @@ const cancelInterest = async (req, res) => {
 };
 
 const getInterestOffer = async (req, res) => {
-    const username = req.user;
-    const student = await Student.findOne({
-        where: {
-            username
+    try {
+        const username = req.user;
+        const student = await Student.findOne({
+            where: {
+                username
+            }
+        });
+        const settingID = req.body.setting_id;
+        const setting = await Settings.findByPk(settingID);
+        const whereClause = {
+            major_name: student.major
+        };
+
+        // console.log(Object.entries(setting));
+        if (setting.train_type) {
+            whereClause.train_type = setting.train_type;
         }
-    });
-    const settingID = req.body.setting_id;
-    const setting = await Settings.findByPk(settingID);
-    const whereClause = {
-        major_name: student.major
-    };
+        if (setting.support_amount) {
+            whereClause.support_amount = setting.support_amount;
+        }
+        if (setting.college_name) {
+            whereClause.college_name = setting.college_name;
+        }
+        if (setting.branch_name) {
+            whereClause.branch_name = setting.branch_name;
+        }
+        if (setting.work_field) {
+            whereClause.work_field = setting.work_field;
+        }
+        if (setting.place_of_work) {
+            whereClause.place_of_work = setting.place_of_work;
+        }
+        // console.log(Object.entries(whereClause));
 
-    // console.log(Object.entries(setting));
-    if (setting.train_type) {
-        whereClause.train_type = setting.train_type;
+        const interestOffers = await Offer.findAll({
+            where: whereClause
+        });
+        res.status(200).json(interestOffers);
+    } catch (err) {
+        res.status(500).json({
+            'message': err.message
+        });
     }
-    if (setting.support_amount) {
-        whereClause.support_amount = setting.support_amount;
-    }
-    if (setting.college_name) {
-        whereClause.college_name = setting.college_name;
-    }
-    if (setting.branch_name) {
-        whereClause.branch_name = setting.branch_name;
-    }
-    if (setting.work_field) {
-        whereClause.work_field = setting.work_field;
-    }
-    if (setting.place_of_work) {
-        whereClause.place_of_work = setting.place_of_work;
-    }
-    // console.log(Object.entries(whereClause));
-
-    const interestOffers = await Offer.findAll({
-        where: whereClause
-    });
-    res.status(200).json(interestOffers);
 }
+
+const viewStudentDetails = async (req, res) => {
+    try {
+        const studentID = req.body.student_id;
+        const student = await Student.findByPk({
+            where: {
+                student_id: studentID
+            }
+        });
+        res.status(200).json(student);
+    } catch (err) {
+        res.status(500).json({
+            'message': err.message
+        });
+    }
+};
 
 module.exports = {
     viewRequests,
@@ -317,5 +320,6 @@ module.exports = {
     addInterest,
     updateInterest,
     cancelInterest,
-    getInterestOffer
+    getInterestOffer,
+    viewStudentDetails
 };

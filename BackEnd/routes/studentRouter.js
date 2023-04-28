@@ -6,14 +6,16 @@ const verifyJWT = require('../middleware/verifyJWT');
 router.use(verifyJWT);
 
 router.get('/requests', studentController.viewRequests);
-router.post('/cancelRequest', studentController.cancelRequest);
+router.patch('/cancelRequest', studentController.cancelRequest);
 router.get('/availableOffers', studentController.viewAvailableOffers);
 router.post('/submitOffer', studentController.submitOffer);
 
 router.get('/interest', studentController.viewInterests);
 router.post('/addInterest', studentController.addInterest);
 router.patch('/updateInterest', studentController.updateInterest);
-router.post('/removeInterest', studentController.cancelInterest);
+router.delete('/removeInterest', studentController.cancelInterest);
 router.post('/interestOffers', studentController.getInterestOffer);
+
+router.get('/studentDetails', studentController.viewStudentDetails);
 
 module.exports = router;
