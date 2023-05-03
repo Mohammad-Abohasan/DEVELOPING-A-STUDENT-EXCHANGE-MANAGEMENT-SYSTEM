@@ -1,0 +1,30 @@
+.sidebar {
+    height: 50rem;
+    background-color: #f8f9fa;
+    padding: 20px;
+    box-sizing: border-box
+}
+
+.sidebar li {
+    /* padding: 10px 13px; */
+    text-align: left;
+    list-style: none;
+    margin: 10px 0;
+}
+
+.sidebar li i {
+    margin-right: 8px;
+    font-size: 30px;
+    vertical-align: middle;
+}
+
+.sidebar li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.sidebar li a:hover {
+    color: #007bff;
+}
