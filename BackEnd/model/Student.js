@@ -13,7 +13,7 @@ const Student = sequelize.define("student", {
   },
   gpa: {
     type: Sequelize.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
   gender: {
     type: Sequelize.STRING(10),
@@ -61,10 +61,6 @@ const Student = sequelize.define("student", {
   },
   birth_date: {
     type: Sequelize.DATEONLY,
-    allowNull: true,
-  },
-  university: {
-    type: Sequelize.STRING,
     allowNull: false,
   },
   college: {
