@@ -63,10 +63,6 @@ const Student = sequelize.define("student", {
     type: Sequelize.DATEONLY,
     allowNull: false,
   },
-  university_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
   college: {
     type: Sequelize.STRING,
     allowNull: false,

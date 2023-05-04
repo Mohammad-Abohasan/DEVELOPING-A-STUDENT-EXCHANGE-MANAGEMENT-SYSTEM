@@ -11,10 +11,6 @@ const Offer = sequelize.define("offer", {
     type: Sequelize.DATEONLY,
     allowNull: true,
   },
-  university_id_src: {
-    type: Sequelize.INTEGER,
-    allowNull: true,
-  },
   other_requirements: {
     type: Sequelize.STRING,
     allowNull: true,
@@ -37,10 +33,6 @@ const Offer = sequelize.define("offer", {
   },
   support_amount: {
     type: Sequelize.STRING,
-    allowNull: true,
-  },
-  university_id_des: {
-    type: Sequelize.INTEGER,
     allowNull: true,
   },
   organization_id: {
