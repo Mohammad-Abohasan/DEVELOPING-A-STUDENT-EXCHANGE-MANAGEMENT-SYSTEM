@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
 import './Sidebar.css';
-import 'material-icons/iconfont/material-icons.css';
-
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 
 function Sidebar() {
     return (
         <>
-            <ul className="sidebar">
+            <ul className="sidebar sidebar-mystyle" >
                 <li>
-                    <i className="material-icons">widgets</i>
+                    <WidgetsIcon />
                     <Link to="/offers">Available Offers</Link>
                 </li>
                 <li>
-                    <i className="material-icons">track_changes</i>
+                    <TrackChangesIcon />
                     <Link to="/requests">Follow-up Requests</Link>
                 </li>
             </ul>

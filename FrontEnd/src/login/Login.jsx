@@ -1,23 +1,20 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.css";
-
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
+import { Navigate } from "react-router-dom";
 import {
   Sheet,
-  // Typography,
   FormControl,
   FormLabel,
   Input,
   Button,
 } from "@mui/joy";
-import { Navigate } from "react-router-dom";
-import Navbar from "../student/components/Navbar";
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true);
   }, []);
   if (!mounted) {
@@ -40,7 +37,7 @@ const Login = () => {
   const [data, setData] = useState({});
   const [isLogged, setIsLogged] = useState(false);
 
-  const onChange = (event) => {
+  const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
 
@@ -73,19 +70,13 @@ const Login = () => {
               }}
               variant="outlined"
             >
-              {/* <div>
-                <Typography level="h4" component="h1">
-                  <b>Welcome!</b>
-                </Typography>
-                <Typography level="body2">Sign in to continue.</Typography>
-              </div> */}
               <FormControl>
                 <FormLabel>Email</FormLabel>
                 <Input
                   name="email"
                   type="email"
-                  placeholder="johndoe@email.com"
-                  onChange={onChange}
+                  placeholder="abohasan@email.com"
+                  onChange={handleInputChange}
                 />
               </FormControl>
               <FormControl>
@@ -94,7 +85,7 @@ const Login = () => {
                   name="password"
                   type="password"
                   placeholder="password"
-                  onChange={onChange}
+                  onChange={handleInputChange}
                 />
               </FormControl>
               <Button sx={{ mt: 1 }} onClick={onSubmit}>

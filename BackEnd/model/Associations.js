@@ -22,11 +22,11 @@ const Associations = () => {
     User.hasOne(Image, { foreignKey: "username" });
     Image.belongsTo(User, { foreignKey: "username" });
 
-    University.hasMany(Offer, { foreignKey: "university_id_src" });
-    Offer.belongsTo(University, { foreignKey: "university_id_src" });
+    University.hasMany(Offer, { foreignKey: "university_id_src", as: "university_src" });
+    Offer.belongsTo(University, { foreignKey: "university_id_src", as: "university_src" });
 
-    University.hasMany(Offer, { foreignKey: "university_id_des" });
-    Offer.belongsTo(University, { foreignKey: "university_id_des" });
+    University.hasMany(Offer, { foreignKey: "university_id_des", as: "university_des" });
+    Offer.belongsTo(University, { foreignKey: "university_id_des", as: "university_des" });
 
     University.hasMany(Student, { foreignKey: "university_id" });
     Student.belongsTo(University, { foreignKey: "university_id" });
