@@ -12,17 +12,12 @@
     margin: 10px 0;
 }
 
-.sidebar li i {
-    margin-right: 8px;
-    font-size: 30px;
-    vertical-align: middle;
-}
-
 .sidebar li a {
     text-decoration: none;
     color: #333;
-    font-size: 20px;
+    font-size: 1rem;
     vertical-align: middle;
+    padding: 4px;
 }
 
 .sidebar li a:hover {
