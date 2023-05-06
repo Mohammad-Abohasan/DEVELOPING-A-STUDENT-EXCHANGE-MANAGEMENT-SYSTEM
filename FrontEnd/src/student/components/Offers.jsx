@@ -319,7 +319,7 @@ const Offers = () => {
             <Sidebar />
           </div>
           <div className="col-10">
-            <h2 className="title-table pt-4 pb-2 px-3"> Available Offers</h2>
+            <h2 className="title-table pt-4 pb-2 px-3">Available Offers</h2>
             <div className="px-3" style={{ height: 400, width: "100%" }}>
               <DataGrid
                 disableRowSelectionOnClick={true}

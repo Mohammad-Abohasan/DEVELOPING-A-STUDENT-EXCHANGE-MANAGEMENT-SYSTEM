@@ -88,7 +88,7 @@ const Login = () => {
                   onChange={handleInputChange}
                 />
               </FormControl>
-              <Button sx={{ mt: 1 }} onClick={onSubmit}>
+              <Button style={{ backgroundColor: "#764abc", color: "white" }} sx={{ mt: 1 }} onClick={onSubmit}>
                 Log in
               </Button>
             </Sheet>
