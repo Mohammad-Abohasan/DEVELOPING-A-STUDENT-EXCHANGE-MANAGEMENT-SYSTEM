@@ -1,43 +1,60 @@
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridPagination,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  // GridToolbarExport,
+  GridToolbarFilterButton,
+  gridPageCountSelector,
+  useGridApiContext,
+  useGridSelector
+} from "@mui/x-data-grid";
 import { format } from "date-fns";
 import OfferDetails from "./OfferDetails";
+import MuiPagination from '@mui/material/Pagination';
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 50 },
-  { field: "university_name", headerName: "University Name", width: 200 },
+  {
+    field: "id", headerName: "ID", width: 50, flex: 0.4
+  },
+  { field: "university_name", headerName: "University Name", width: 200, flex: 0.4 },
   {
     field: "offer_date",
     headerName: "Offer Deadline",
     width: 115,
     valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
+    flex: 0.4
   },
-  { field: "train_type", headerName: "Type", width: 100 },
-  { field: "country_name", headerName: "Country", width: 100 },
-  { field: "train_start_date", headerName: "ٍStart date", valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"), width: 115 },
-  { field: "train_end_date", headerName: "ٍEnd date", valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"), width: 115 },
-  { field: "branch_name", headerName: "Branch", width: 100 },
-  { field: "other_requirements", headerName: "Other requirements", width: 210 },
+  { field: "train_type", headerName: "Type", flex: 0.4 },
+  { field: "country_name", headerName: "Country", flex: 0.4 },
+  { field: "train_start_date", headerName: "ٍStart date", valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"), width: 115, flex: 0.4 },
+  { field: "train_end_date", headerName: "ٍEnd date", valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"), width: 115, flex: 0.4 },
+  { field: "branch_name", headerName: "Branch", width: 100, flex: 0.4 },
+  { field: "other_requirements", headerName: "Other requirements", flex: 0.4 },
   {
     field: "apply",
     headerName: "Apply",
-    renderCell: () => <button className="btn btn-success">Apply</button>,
+    renderCell: () => <button className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>Apply</button>,
     sortable: false,
-    width: 80,
+    flex: 0.4
   },
   {
     field: "details",
     headerName: "Details",
     renderCell: (params) => (
-      <Link to={`/offers/${params.id}`} className="btn btn-info btn-sm">
+      <Link to={`/offers/${params.id}`} className="btn btn-dark btn-bg" style={{ width: "100%" }}>
         Details
       </Link>
     ),
     sortable: false,
-  },
+    flex: 0.4
+  }
 ];
 
 const rows = [
@@ -208,47 +225,134 @@ const rows = [
   },
 ];
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#146eb4',
+    },
+  },
+});
+
 const Offers = () => {
   const handleCellClick = (params, event) => {
     if (params.field === "apply") {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "bottom-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
+      Swal.fire({
+        title: `Confirm applying for ${params.row.university_name} offer?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Apply!',
+        cancelButtonText: 'Cancel',
+        // toast: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Offer applied successfully!',
+            icon: 'success',
+            toast: true,
+            position: 'bottom-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
       });
+      // }
+      // const Toast = Swal.mixin({
+      //   toast: true,
+      //   position: "bottom-end",
+      //   showConfirmButton: false,
+      //   timer: 3000,
+      //   timerProgressBar: true,
+      //   didOpen: (toast) => {
+      //     toast.addEventListener("mouseenter", Swal.stopTimer);
+      //     toast.addEventListener("mouseleave", Swal.resumeTimer);
+      //   },
+      // });
 
-      Toast.fire({
-        icon: "success",
-        title: "Offer applied successfully",
-      });
+      // Toast.fire({
+      //   icon: "success",
+      //   title: "Offer applied successfully",
+      // });
     } else if (params.field === "details") {
       <OfferDetails />;
     }
   };
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer style={{ backgroundColor: 'whitesmoke' }}>
+        <GridToolbarColumnsButton style={{ color: '#146eb4' }} />
+        <GridToolbarFilterButton style={{ color: '#146eb4' }} />
+        <GridToolbarDensitySelector style={{ color: '#146eb4' }} />
+        {/* <GridToolbarExport style={{ color: '#146eb4' }} /> */}
+      </GridToolbarContainer>
+    );
+  }
+
+  function Pagination({ page, onPageChange, className }) {
+    const apiRef = useGridApiContext();
+    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
+    return (
+      <ThemeProvider theme={theme}>
+        <MuiPagination
+          color="primary"
+          className={className}
+          count={pageCount}
+          page={page + 1}
+          onChange={(event, newPage) => {
+            onPageChange(event, newPage - 1);
+          }}
+        />
+      </ThemeProvider>
+    )
+  }
+
+  function CustomPagination(props) {
+    return <GridPagination ActionsComponent={Pagination} {...props} />;
+  }
 
   return (
     <>
       <Navbar />
-      <div className="container-fluid py-3 pt-4">
-        <div className="row">
-          <div className="col-2 sidebar">
+      <div className="container-fluid py-3 pt-0">
+        <div className="row flex">
+          <div className="col-2 sidebar sidebar-mystyle">
             <Sidebar />
           </div>
           <div className="col-10">
-            <h1>Available Offers</h1>
-            <div style={{ height: 400, width: "100%" }}>
+            <h2 className="title-table pt-4 pb-2 px-3"> Available Offers</h2>
+            <div className="px-3" style={{ height: 400, width: "100%" }}>
               <DataGrid
                 disableRowSelectionOnClick={true}
                 sx={{
-                  "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                  boxShadow: 10,
+                  border: 1,
+                  borderColor: '#cacaca',
+                  '& .MuiDataGrid-toolbarContainer': {
+                    backgroundColor: '#fff',
+                    display: 'flex',
+                    // justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    '& > *': {
+                      marginLeft: theme.spacing(2),
+                    },
+                  },
+                  '& .MuiDataGrid-columnHeaderTitle': {
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                  },
+                  '& .MuiDataGrid-columnHeader': {
+                    backgroundColor: '#ecf1f1',
+                    color: '#7A7E8D',
+                    '&:hover': {
+                      backgroundColor: '#E1E1E1',
+                    }
+                  },
+                  '& .MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-cell:focus-within': {
                     outline: "none !important",
                   },
+                  '& p': {
+                    marginBottom: "0"
+                  }
                 }}
                 autoHeight
                 disableColumnMenu={true}
@@ -257,10 +361,14 @@ const Offers = () => {
                 columns={columns}
                 initialState={{
                   pagination: {
-                    paginationModel: { page: 0, pageSize: 10 },
+                    paginationModel: { pageSize: 10 },
                   },
                 }}
-                pageSizeOptions={[10, 25, 50]}
+                pageSizeOptions={[5, 10, 15, 20, 25]}
+                slots={{
+                  toolbar: CustomToolbar,
+                  pagination: CustomPagination
+                }}
               />
             </div>
           </div>
