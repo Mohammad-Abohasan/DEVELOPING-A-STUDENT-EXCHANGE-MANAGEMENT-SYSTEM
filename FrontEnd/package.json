@@ -8,7 +8,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/joy": "^5.0.0-alpha.77",
     "@mui/material": "^5.12.2",
-    "@mui/x-data-grid": "^6.3.0",
+    "@mui/x-data-grid": "^6.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

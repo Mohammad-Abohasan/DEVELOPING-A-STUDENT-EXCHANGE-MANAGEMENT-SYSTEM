@@ -11,27 +11,24 @@
 .logo-text {
   position: relative;
   top: 0.2rem;
+  color: #764ABC;
 }
 
+/* .navbar-toggler {
+  background-color: whitesmoke;
+} */
+
 .navbar-nav .nav-link {
-  font-size: 1.1rem;
-  font-weight: 400;
+  color: #764ABC;
+  font-weight: 700;
+  font-size: 1.0625rem;
   margin-left: 1rem;
   text-transform: uppercase;
 }
-
-.navbar-nav .nav-link.active {
-  font-weight: 500;
-}
-
+/* 
 .nav-link:hover {
-  color: #007bff;
-  border-bottom: 2px solid #007bff;
-}
-
-.logo-text:hover {
-  color: #007bff;
-}
+  color: #f7c32e !important
+} */
 
 #my-nav {
   position: sticky;
@@ -39,4 +36,5 @@
   left: 0;
   width: 100%;
   z-index: 1000;
+  background-color: whitesmoke;
 }

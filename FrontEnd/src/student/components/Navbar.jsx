@@ -4,7 +4,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   return (
-    <nav id="my-nav" className="navbar navbar-expand-lg shadow-sm mb-2 bg-white">
+    <nav id="my-nav" className="navbar navbar-expand-lg shadow-sm bg">
       <div className="container-fluid">
         <Link className="navbar-brand logo" to="/">
           <img src={logo} alt='AArU' />
@@ -25,7 +25,7 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to={"/"}>
+              <Link className="nav-link" aria-current="page" to={"/"}>
                 Home
               </Link>
             </li>
