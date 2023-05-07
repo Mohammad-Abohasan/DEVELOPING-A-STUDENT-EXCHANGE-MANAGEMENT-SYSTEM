@@ -1,39 +1,94 @@
-import { Link } from 'react-router-dom';
+import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
+import {
+    Box,
+    Toolbar,
+    CssBaseline,
+    Typography,
+    IconButton,
+    Tooltip,
+} from '@mui/material';
+import MuiAppBar from '@mui/material/AppBar';
+import { Brightness4, Brightness7, Menu } from '@mui/icons-material';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Sidebar from './Sidebar';
 import logo from '../../AArU.png';
-import './Navbar.css';
+
+const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        ...(open && {
+            marginLeft: 240,
+            width: "calc(100% - 240px)",
+            transition: theme.transitions.create(['width', 'margin'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+        }),
+        backgroundColor: theme.palette.mode === 'dark' ? '#121212' : 'whitesmoke'
+    }));
 
 const Navbar = () => {
-  return (
-    <nav id="my-nav" className="navbar navbar-expand-lg shadow-sm bg">
-      <div className="container-fluid">
-        <Link className="navbar-brand logo" to="/">
-          <img src={logo} alt='AArU' />
-          <h4 className='logo-text'>Student Exchange Management System</h4>
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    const [open, setOpen] = useState(false);
+    const [dark, setDark] = useState(false);
+    const navigate = useNavigate();
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link" aria-current="page" to={"/"}>
-                Home
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  );
+    const darkTheme = useMemo(() => createTheme({
+        palette: {
+            mode: dark ? 'dark' : 'light'
+        }
+    }), [dark]);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    return (
+        <>
+            <ThemeProvider theme={darkTheme}>
+                <Box sx={{ display: 'flex' }}>
+                    <CssBaseline />
+                    <AppBar position="fixed" open={open}>
+                        <Toolbar>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerOpen}
+                                edge="start"
+                                sx={{
+                                    marginRight: 3,
+                                    ...(open && { display: 'none' }),
+                                }}
+                            >
+                                <Menu sx={{ color: '#764ABC' }} />
+                            </IconButton>
+
+                            <Tooltip title="Go back to home page">
+                                <IconButton onClick={() => navigate('/')}>
+                                    <img src={logo} alt="AArU-Logo" style={{ height: "3rem", width: "3rem" }} />
+                                </IconButton>
+                            </Tooltip>
+                            <Typography component="div" sx={{ flexGrow: 1 }}>
+                                <Link className="navbar-brand" to="/">
+                                    <h4 style={{ color: '#764ABC', position: 'relative', top: '0.2rem' }}>
+                                        Student Exchange Management System
+                                    </h4>
+                                </Link>
+                            </Typography>
+                            <IconButton onClick={() => setDark(!dark)}>
+                                {dark ? <Brightness7 /> : <Brightness4 />}
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                    <Sidebar {...{ open, setOpen }} />
+                </Box>
+            </ThemeProvider>
+        </>
+    )
 }
 
 export default Navbar;
