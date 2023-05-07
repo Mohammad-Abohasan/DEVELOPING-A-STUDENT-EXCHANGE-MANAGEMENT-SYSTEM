@@ -5,6 +5,7 @@ const OfferDetails = () => {
   const { offerID } = useParams();
   const apiUrl = "http://localhost:9000";
   const [offerData, setOfferData] = useState([]);
+  
   useEffect(() => {
     fetch(`${apiUrl}/offers/${offerID}`)
       .then((res) => res.json())
@@ -13,6 +14,7 @@ const OfferDetails = () => {
 
   return (
     <>
+      <div>Offer Details</div>
       {offerData && (
         <>
           <h1>{offerData.university_name}</h1>
@@ -39,7 +41,7 @@ const OfferDetails = () => {
           {offerData.meals_text}
           {offerData.residence_text}
           {offerData.transfer_text}
-          {offerData.status }
+          {offerData.status}
           {offerData.train_length}
           {offerData.inst_name}
           {offerData.place_of_work}

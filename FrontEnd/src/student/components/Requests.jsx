@@ -10,12 +10,9 @@ import {
   useGridSelector
 } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import OfferDetails from "./OfferDetails";
 import MuiPagination from '@mui/material/Pagination';
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
 import { ThemeProvider, createTheme } from "@mui/material";
 
 const columns = [
@@ -186,18 +183,15 @@ const Requests = () => {
           });
         }
       });
-    } else if (params.field === "details") {
-      <OfferDetails />;
     }
   };
 
   function CustomToolbar() {
     return (
       <GridToolbarContainer style={{ backgroundColor: 'whitesmoke' }}>
-        <GridToolbarColumnsButton style={{ color: '#146eb4' }} />
-        <GridToolbarFilterButton style={{ color: '#146eb4' }} />
-        <GridToolbarDensitySelector style={{ color: '#146eb4' }} />
-        {/* <GridToolbarExport style={{ color: '#146eb4' }} /> */}
+        <GridToolbarColumnsButton style={{ color: '#146EB4' }} />
+        <GridToolbarFilterButton style={{ color: '#146EB4' }} />
+        <GridToolbarDensitySelector style={{ color: '#146EB4' }} />
       </GridToolbarContainer>
     );
   }
@@ -227,66 +221,56 @@ const Requests = () => {
 
   return (
     <>
-      <Navbar />
-      <div className="container-fluid py-3 pt-0">
-        <div className="row flex">
-          <div className="col-2 sidebar sidebar-mystyle">
-            <Sidebar />
-          </div>
-          <div className="col-10">
-            <h2 className="title-table pt-4 pb-2 px-3">Follow-up Requests</h2>
-            <div className="px-3" style={{ height: 400, width: "100%" }}>
-              <DataGrid
-                disableRowSelectionOnClick={true}
-                sx={{
-                  boxShadow: 10,
-                  border: 1,
-                  borderColor: '#cacaca',
-                  '& .MuiDataGrid-toolbarContainer': {
-                    backgroundColor: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& > *': {
-                      marginLeft: theme.spacing(2),
-                    },
-                  },
-                  '& .MuiDataGrid-columnHeaderTitle': {
-                    fontWeight: 'bold',
-                    fontSize: '16px',
-                  },
-                  '& .MuiDataGrid-columnHeader': {
-                    backgroundColor: '#ecf1f1',
-                    color: '#7A7E8D',
-                    '&:hover': {
-                      backgroundColor: '#E1E1E1',
-                    }
-                  },
-                  '& .MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-cell:focus-within': {
-                    outline: "none !important",
-                  },
-                  '& p': {
-                    marginBottom: "0"
-                  }
-                }}
-                autoHeight
-                disableColumnMenu={true}
-                onCellClick={handleCellClick}
-                rows={rows}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: { pageSize: 10 },
-                  },
-                }}
-                pageSizeOptions={[5, 10, 15, 20, 25]}
-                slots={{
-                  toolbar: CustomToolbar,
-                  pagination: CustomPagination
-                }}
-              />
-            </div>
-          </div>
-        </div>
+      <h2 className="pt-4 pb-2 px-3" sx={{ fontSize: '40px' }}>Follow-up Requests</h2>
+      <div className="px-3" style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          disableRowSelectionOnClick={true}
+          sx={{
+            boxShadow: 10,
+            border: 1,
+            borderColor: '#cacaca',
+            '& .MuiDataGrid-toolbarContainer': {
+              backgroundColor: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              '& > *': {
+                marginLeft: theme.spacing(2),
+              },
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontWeight: 'bold',
+              fontSize: '16px',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              backgroundColor: '#ecf1f1',
+              color: '#7A7E8D',
+              '&:hover': {
+                backgroundColor: '#E1E1E1',
+              }
+            },
+            '& .MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-cell:focus-within': {
+              outline: "none !important",
+            },
+            '& p': {
+              marginBottom: "0"
+            }
+          }}
+          autoHeight
+          disableColumnMenu={true}
+          onCellClick={handleCellClick}
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[5, 10, 15, 20, 25]}
+          slots={{
+            toolbar: CustomToolbar,
+            pagination: CustomPagination
+          }}
+        />
       </div>
     </>
   );
