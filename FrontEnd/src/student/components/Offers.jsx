@@ -15,6 +15,9 @@ import MuiPagination from '@mui/material/Pagination';
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import axios from '../../api/axios';
+import { AccessTokenContext } from "../../context/AccessTokenProvider";
 
 const columns = [
   {
@@ -49,15 +52,15 @@ const columns = [
   {
     field: "train_start_date",
     headerName: "ٍStart date",
-    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"), 
-    width: 115, 
+    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
+    width: 115,
     flex: 0.4
   },
   {
     field: "train_end_date",
     headerName: "End date",
-    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"), 
-    width: 115, 
+    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
+    width: 115,
     flex: 0.4
   },
   {
@@ -271,6 +274,29 @@ const theme = createTheme({
 });
 
 const Offers = () => {
+  const [offersData, setOffersData] = useState([]);
+  const { accessToken } = useContext(AccessTokenContext);
+
+  useEffect(() => {
+    const getAvailableOffers = async () => {
+      try {
+        const response = await axios.get('/student/availableOffers', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        console.log(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getAvailableOffers();
+
+    return () => {
+    }
+  }, []);
+
 
   const handleCellClick = (params, event) => {
     if (params.field === "apply") {

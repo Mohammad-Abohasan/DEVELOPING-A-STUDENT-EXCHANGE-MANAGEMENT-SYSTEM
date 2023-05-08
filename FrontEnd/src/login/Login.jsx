@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import "./Login.css";
+import { useContext, useEffect, useState } from "react";
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
 import { Navigate } from "react-router-dom";
 import {
@@ -9,6 +8,8 @@ import {
   Input,
   Button,
 } from "@mui/joy";
+import axios from "../api/axios";
+import { AccessTokenContext } from "../context/AccessTokenProvider";
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -36,15 +37,30 @@ function ModeToggle() {
 const Login = () => {
   const [data, setData] = useState({});
   const [isLogged, setIsLogged] = useState(false);
+  const { setAccessToken } = useContext(AccessTokenContext);
 
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    localStorage.setItem("user", JSON.stringify(data));
-    setIsLogged(true);
+    try {
+      const response = await axios.post('http://localhost:3500/auth/login',
+        JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.status === 200) {
+        setAccessToken(response.data.accessToken);
+        setIsLogged(true);
+      } else {
+        console.error(`Failed to login: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error(`Failed to login: ${error}`);
+    }
   };
 
   return (
@@ -71,12 +87,14 @@ const Login = () => {
               variant="outlined"
             >
               <FormControl>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <Input
-                  name="email"
-                  type="email"
+                  name="username"
+                  type="text"
                   placeholder="abohasan@email.com"
                   onChange={handleInputChange}
+                  autoComplete="off"
+                  required
                 />
               </FormControl>
               <FormControl>
@@ -86,6 +104,8 @@ const Login = () => {
                   type="password"
                   placeholder="password"
                   onChange={handleInputChange}
+                  autoComplete="off"
+                  required
                 />
               </FormControl>
               <Button style={{ backgroundColor: "#764abc", color: "white" }} sx={{ mt: 1 }} onClick={onSubmit}>
