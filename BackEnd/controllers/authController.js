@@ -16,8 +16,8 @@ const handleLogin = async (req, res) => {
             username: username
         }
     });
-    console.log(foundUser.password);
-    console.log(password);
+    // console.log(foundUser.password);
+    // console.log(password);
     if (!foundUser) {
         return res.sendStatus(401); // Unauthorized
     }
