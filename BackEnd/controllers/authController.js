@@ -37,15 +37,15 @@ const handleLogin = async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '1d' }
         );
-
-        res.cookie('access_token', accessToken, {
-            httpOnly: true,
-            sameSite: 'None',
-            maxAge: 24 * 60 * 60 * 1000
-        });
-        return res.status(201).json({
-            'success': `${username} Logged in successfully 😊👌.`
-        });
+        res.json({ accessToken });
+        // res.header('access_token', accessToken, {
+        //     httpOnly: true,
+        //     sameSite: 'None',
+        //     maxAge: 24 * 60 * 60 * 1000
+        // });
+        // return res.status(201).json({
+        //     'success': `${username} Logged in successfully 😊👌.`
+        // });
     } else {
         res.sendStatus(400);
     }

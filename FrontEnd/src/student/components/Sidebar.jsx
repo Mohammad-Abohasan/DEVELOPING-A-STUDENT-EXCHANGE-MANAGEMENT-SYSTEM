@@ -16,7 +16,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { ChevronLeft, Logout } from '@mui/icons-material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Offers from './Offers';
@@ -24,6 +24,7 @@ import Requests from './Requests';
 import abohasanAvat from '../../avatarMohammad.jpg';
 import Dashboard from './Dashboard';
 import OfferDetails from './OfferDetails';
+import { AccessTokenContext } from '../../context/AccessTokenProvider';
 
 const openedMixin = (theme) => ({
     width: 240,
@@ -73,6 +74,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const Sidebar = ({ open, setOpen }) => {
     const [selectedLink, setSelectedLink] = useState('');
+  const { setAccessToken } = useContext(AccessTokenContext);
 
     const list = useMemo(() => [
         {
@@ -98,7 +100,7 @@ const Sidebar = ({ open, setOpen }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // dispatch({ type: 'UPDATE_USER', payload: null });
+        setAccessToken('');
         navigate('/');
     };
 
