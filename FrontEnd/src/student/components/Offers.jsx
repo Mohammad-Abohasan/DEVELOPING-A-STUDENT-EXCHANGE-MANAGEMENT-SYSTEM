@@ -88,7 +88,7 @@ const columns = [
     field: "details",
     headerName: "Details",
     renderCell: (params) => (
-      <Link to={`${params.id}`} className="btn btn-dark btn-bg" style={{ width: "100%" }}>
+      <Link to={`${params.id}`} className="btn btn-info btn-bg" style={{ width: "100%" }}>
         Details
       </Link>
     ),
@@ -298,29 +298,68 @@ const Offers = () => {
   }, []);
 
 
+  // const handleCellClick = (params, event) => {
+  //   if (params.field === "apply") {
+  //     Swal.fire({
+  //       title: `Confirm applying for ${params.row.university_name} offer ? `,
+  //       icon: 'warning',
+  //       showCancelButton: true,
+  //       confirmButtonText: 'Apply!',
+  //       cancelButtonText: 'Cancel',
+  //       // toast: true,
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         Swal.fire({
+  //           title: 'Offer applied successfully!',
+  //           icon: 'success',
+  //           toast: true,
+  //           position: 'bottom-end',
+  //           showConfirmButton: false,
+  //           timer: 3000
+  //         });
+  //       }
+  //     });
+  //   }
+  // };
+
   const handleCellClick = (params, event) => {
     if (params.field === "apply") {
+      // Show offer details modal
       Swal.fire({
-        title: `Confirm applying for ${params.row.university_name} offer?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Apply!',
-        cancelButtonText: 'Cancel',
-        // toast: true,
+        title: params.row.university_name,
+        html: `Offer details: ${params.row.offer_details}`,
+        showCloseButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        confirmButtonText: 'Apply',
+        // Add any other options or customizations as needed
       }).then((result) => {
         if (result.isConfirmed) {
+          // Show confirmation dialog
           Swal.fire({
-            title: 'Offer applied successfully!',
-            icon: 'success',
-            toast: true,
-            position: 'bottom-end',
-            showConfirmButton: false,
-            timer: 3000
+            title: `Confirm applying for ${params.row.university_name} offer?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Apply!',
+            cancelButtonText: 'Cancel',
+            // toast: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: 'Offer applied successfully!',
+                icon: 'success',
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000
+              });
+            }
           });
         }
       });
     }
   };
+
 
   function CustomToolbar() {
     return (
