@@ -74,7 +74,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const Sidebar = ({ open, setOpen }) => {
     const [selectedLink, setSelectedLink] = useState('');
-  const { setAccessToken } = useContext(AccessTokenContext);
+    const { setAccessToken } = useContext(AccessTokenContext);
 
     const list = useMemo(() => [
         {
@@ -152,7 +152,7 @@ const Sidebar = ({ open, setOpen }) => {
                     </Tooltip>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                    {open && <Typography sx={{fontWeight: 'bold'}}>{'Mohammad Abohasan'}</Typography>}
+                    {open && <Typography sx={{ fontWeight: 'bold' }}>{'Mohammad Abohasan'}</Typography>}
                     <Typography variant="body2">{'Student' || 'role'}</Typography>
                     {open && (
                         <Typography variant="body2">{'PTUK'}</Typography>

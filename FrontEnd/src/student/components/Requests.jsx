@@ -14,6 +14,9 @@ import MuiPagination from '@mui/material/Pagination';
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material";
+import axios from "../../api/axios";
+import { useContext, useEffect, useState } from "react";
+import { AccessTokenContext } from "../../context/AccessTokenProvider";
 
 const columns = [
   {
@@ -163,6 +166,36 @@ const theme = createTheme({
 });
 
 const Requests = () => {
+  const [requestsData, setRequestsData] = useState([]);
+  const { accessToken } = useContext(AccessTokenContext);
+
+  useEffect(() => {
+    const getAvailableOffers = async () => {
+      try {
+        const response = await axios.get('/student/requests', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        console.log(response.data);
+        const mappedData = response.data.map((request) => ({
+          id: request.id,
+          university_name: 'lablabla', // later
+          request_date: request.request_date,
+          request_status: request.status
+        }));
+        setRequestsData(mappedData);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getAvailableOffers();
+
+    return () => {
+    }
+  }, []);
+
   const handleCellClick = (params, event) => {
     if (params.field === "cancel_request") {
       Swal.fire({
@@ -258,7 +291,7 @@ const Requests = () => {
           autoHeight
           disableColumnMenu={true}
           onCellClick={handleCellClick}
-          rows={rows}
+          rows={requestsData}
           columns={columns}
           initialState={{
             pagination: {

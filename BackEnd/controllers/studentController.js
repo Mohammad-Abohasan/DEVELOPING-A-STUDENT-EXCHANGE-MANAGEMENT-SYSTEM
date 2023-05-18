@@ -1,3 +1,4 @@
+const University = require("../model/University");
 const Settings = require("../model/Settings");
 const Student = require("../model/Student");
 const Request = require("../model/Request");
@@ -59,7 +60,14 @@ const viewAvailableOffers = async (req, res) => {
                 stu_sex: student.gender,
                 major_name: student.major,
                 college_name: student.college
-            }
+            },
+            include: [
+                {
+                    model: University,
+                    as: 'university_src',
+                    attributes: ['name', 'country', 'city']
+                }
+            ]
         });
         await res.status(200).json(availableOffers);
     } catch (err) {
