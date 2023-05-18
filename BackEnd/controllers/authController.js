@@ -25,7 +25,7 @@ const handleLogin = async (req, res) => {
     const match = await bcrypt.compare(password, foundUser.password);
     if (match) {
         const role = foundUser.role;
-        console.log(process.env.ACCESS_TOKEN_SECRET);
+        // console.log(process.env.ACCESS_TOKEN_SECRET);
         // create JWT
         const accessToken = jwt.sign(
             {

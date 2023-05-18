@@ -1,22 +1,23 @@
 import Login from "./login/Login";
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './student/pages/Home';
 import Protect from './protected/Protect';
 import './App.css';
-import AccessTokenProvider from "./context/AccessTokenProvider";
+import AccessTokenProvider, { AccessTokenContext } from "./context/AccessTokenProvider";
+import { useContext } from "react";
 
 function App() {
+  const { accessToken } = useContext(AccessTokenContext);
+
   return (
     <div className="App">
-      <AccessTokenProvider>
-        <Routes>
-          <Route path="" element={<Login />} />
-          <Route element={<Protect />} >
-            <Route path="/home/*" element={<Home />} />
-            <Route path="*" element={<h1>404 Page not found :)</h1>} />
-          </Route>
-        </Routes>
-      </AccessTokenProvider>
+      <Routes>
+        <Route path="" element={ <Login />} />
+        <Route element={<Protect />} >
+          <Route path="/home/*" element={<Home />} />
+          <Route path="*" element={<h1>404 Page not found :)</h1>} />
+        </Route>
+      </Routes>
     </div>
   );
 }

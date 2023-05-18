@@ -36,8 +36,8 @@ function ModeToggle() {
 
 const Login = () => {
   const [data, setData] = useState({});
-  const [isLogged, setIsLogged] = useState(false);
-  const { setAccessToken } = useContext(AccessTokenContext);
+  // const [isLogged, setIsLogged] = useState(false);
+  const { accessToken, setAccessToken } = useContext(AccessTokenContext);
 
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -54,7 +54,6 @@ const Login = () => {
       });
       if (response.status === 200) {
         setAccessToken(response.data.accessToken);
-        setIsLogged(true);
       } else {
         console.error(`Failed to login: ${response.status} ${response.statusText}`);
       }
@@ -65,7 +64,7 @@ const Login = () => {
 
   return (
     <>
-      {isLogged ? (
+      {accessToken !== '' ? (
         <Navigate to="/home" />
       ) : (
         <CssVarsProvider>

@@ -51,7 +51,7 @@ const columns = [
   },
   {
     field: "train_start_date",
-    headerName: "ٍStart date",
+    headerName: "Start date",
     valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
     width: 115,
     flex: 0.4
@@ -88,7 +88,7 @@ const columns = [
     field: "details",
     headerName: "Details",
     renderCell: (params) => (
-      <Link to={`${params.id}`} className="btn btn-dark btn-bg" style={{ width: "100%" }}>
+      <Link to={`${params.id}`} className="btn btn-info btn-bg" style={{ width: "100%" }}>
         Details
       </Link>
     ),
@@ -274,6 +274,7 @@ const theme = createTheme({
 });
 
 const Offers = () => {
+  const [offerID, setOfferID] = useState(1);
   const [offersData, setOffersData] = useState([]);
   const { accessToken } = useContext(AccessTokenContext);
 
@@ -285,7 +286,20 @@ const Offers = () => {
             Authorization: `Bearer ${accessToken}`
           }
         });
-        console.log(response.data);
+        const mappedData = response.data.map((offer) => ({
+          id: offer.id,
+          university_name: offer.university_src.name,
+          country_name: offer.university_src.country,
+          city: offer.university_src.city,
+          branch_name: offer.branch_name,
+          college_name: offer.college_name,
+          offer_date: offer.offer_date,
+          train_type: offer.train_type,
+          train_start_date: offer.train_start_date,
+          train_end_date: offer.train_end_date,
+          other_requirements: offer.other_requirements,
+        }));
+        setOffersData(mappedData);
       } catch (err) {
         console.error(err);
       }
@@ -298,29 +312,69 @@ const Offers = () => {
   }, []);
 
 
+  // const handleCellClick = (params, event) => {
+  //   if (params.field === "apply") {
+  //     Swal.fire({
+  //       title: `Confirm applying for ${params.row.university_name} offer ? `,
+  //       icon: 'warning',
+  //       showCancelButton: true,
+  //       confirmButtonText: 'Apply!',
+  //       cancelButtonText: 'Cancel',
+  //       // toast: true,
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         Swal.fire({
+  //           title: 'Offer applied successfully!',
+  //           icon: 'success',
+  //           toast: true,
+  //           position: 'bottom-end',
+  //           showConfirmButton: false,
+  //           timer: 3000
+  //         });
+  //       }
+  //     });
+  //   }
+  // };
+
   const handleCellClick = (params, event) => {
     if (params.field === "apply") {
+      // Show offer details modal
       Swal.fire({
-        title: `Confirm applying for ${params.row.university_name} offer?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Apply!',
-        cancelButtonText: 'Cancel',
-        // toast: true,
+        title: params.row.university_name,
+        html: `Offer details: ${params.row.offer_details}`,
+        showCloseButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        confirmButtonText: 'Apply',
+        // Add any other options or customizations as needed
       }).then((result) => {
         if (result.isConfirmed) {
+          // Show confirmation dialog
           Swal.fire({
-            title: 'Offer applied successfully!',
-            icon: 'success',
-            toast: true,
-            position: 'bottom-end',
-            showConfirmButton: false,
-            timer: 3000
+            title: `Confirm applying for ${params.row.university_name} offer?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Apply!',
+            cancelButtonText: 'Cancel',
+            // toast: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: 'Offer applied successfully!',
+                icon: 'success',
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000
+              });
+            }
           });
         }
       });
     }
   };
+
+  // skelton
 
   function CustomToolbar() {
     return (
@@ -395,7 +449,7 @@ const Offers = () => {
           autoHeight
           disableColumnMenu={true}
           onCellClick={handleCellClick}
-          rows={rows}
+          rows={offersData}
           columns={columns}
           initialState={{
             pagination: {
