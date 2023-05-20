@@ -1,0 +1,7 @@
+.loginError {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0px 6px;
+}

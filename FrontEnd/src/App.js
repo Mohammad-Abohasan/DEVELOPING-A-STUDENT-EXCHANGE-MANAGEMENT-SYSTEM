@@ -1,21 +1,29 @@
 import Login from "./login/Login";
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './student/pages/Home';
 import Protect from './protected/Protect';
 import './App.css';
-import AccessTokenProvider, { AccessTokenContext } from "./context/AccessTokenProvider";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { AccessTokenContext } from "./context/AccessTokenProvider";
+import Cookies from "universal-cookie";
+import PageNotFound from "./student/components/PageNotFound";
 
 function App() {
-  const { accessToken } = useContext(AccessTokenContext);
+  const { setAccessToken } = useContext(AccessTokenContext);
+  const cookie = new Cookies();
+
+  useEffect(() => {
+    const getToken = cookie.get('Bearer');
+    setAccessToken(getToken);
+  }, []);
 
   return (
     <div className="App">
       <Routes>
-        <Route path="" element={ <Login />} />
+        <Route path="" element={<Login />} />
         <Route element={<Protect />} >
           <Route path="/home/*" element={<Home />} />
-          <Route path="*" element={<h1>404 Page not found :)</h1>} />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </div>

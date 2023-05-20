@@ -17,6 +17,7 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import axios from "../../api/axios";
 import { useContext, useEffect, useState } from "react";
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
+import Loading from "./Loading";
 
 const columns = [
   {
@@ -254,57 +255,63 @@ const Requests = () => {
 
   return (
     <>
-      <h2 className="pt-4 pb-2 px-3" sx={{ fontSize: '40px' }}>Follow-up Requests</h2>
-      <div className="px-3" style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          disableRowSelectionOnClick={true}
-          sx={{
-            boxShadow: 10,
-            border: 1,
-            borderColor: '#cacaca',
-            '& .MuiDataGrid-toolbarContainer': {
-              backgroundColor: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              '& > *': {
-                marginLeft: theme.spacing(2),
-              },
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontWeight: 'bold',
-              fontSize: '16px',
-            },
-            '& .MuiDataGrid-columnHeader': {
-              backgroundColor: '#ecf1f1',
-              color: '#7A7E8D',
-              '&:hover': {
-                backgroundColor: '#E1E1E1',
-              }
-            },
-            '& .MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-cell:focus-within': {
-              outline: "none !important",
-            },
-            '& p': {
-              marginBottom: "0"
-            }
-          }}
-          autoHeight
-          disableColumnMenu={true}
-          onCellClick={handleCellClick}
-          rows={requestsData}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[5, 10, 15, 20, 25]}
-          slots={{
-            toolbar: CustomToolbar,
-            pagination: CustomPagination
-          }}
-        />
-      </div>
+      {requestsData.length === 0 ? (
+        <Loading />
+      ) : (
+        <>
+          <h2 className="pt-4 pb-2 px-3" sx={{ fontSize: '40px' }}>Follow-up Requests</h2>
+          <div className="px-3" style={{ height: 400, width: "100%" }}>
+            <DataGrid
+              disableRowSelectionOnClick={true}
+              sx={{
+                boxShadow: 10,
+                border: 1,
+                borderColor: '#cacaca',
+                '& .MuiDataGrid-toolbarContainer': {
+                  backgroundColor: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  '& > *': {
+                    marginLeft: theme.spacing(2),
+                  },
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                },
+                '& .MuiDataGrid-columnHeader': {
+                  backgroundColor: '#ecf1f1',
+                  color: '#7A7E8D',
+                  '&:hover': {
+                    backgroundColor: '#E1E1E1',
+                  }
+                },
+                '& .MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-cell:focus-within': {
+                  outline: "none !important",
+                },
+                '& p': {
+                  marginBottom: "0"
+                }
+              }}
+              autoHeight
+              disableColumnMenu={true}
+              onCellClick={handleCellClick}
+              rows={requestsData}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { pageSize: 10 },
+                },
+              }}
+              pageSizeOptions={[5, 10, 15, 20, 25]}
+              slots={{
+                toolbar: CustomToolbar,
+                pagination: CustomPagination
+              }}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 };
