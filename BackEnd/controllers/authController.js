@@ -16,8 +16,6 @@ const handleLogin = async (req, res) => {
             username: username
         }
     });
-    // console.log(foundUser.password);
-    // console.log(password);
     if (!foundUser) {
         return res.sendStatus(401); // Unauthorized
     }
@@ -25,8 +23,6 @@ const handleLogin = async (req, res) => {
     const match = await bcrypt.compare(password, foundUser.password);
     if (match) {
         const role = foundUser.role;
-        // console.log(process.env.ACCESS_TOKEN_SECRET);
-        // create JWT
         const accessToken = jwt.sign(
             {
                 "UserInfo": {
@@ -38,7 +34,6 @@ const handleLogin = async (req, res) => {
             { expiresIn: '1d' }
         );
         res.json({ accessToken });
-        // res.header('access_token', accessToken, {
         //     httpOnly: true,
         //     sameSite: 'None',
         //     maxAge: 24 * 60 * 60 * 1000
@@ -47,12 +42,11 @@ const handleLogin = async (req, res) => {
         //     'success': `${username} Logged in successfully 😊👌.`
         // });
     } else {
-        res.sendStatus(400);
+        res.sendStatus(401);
     }
 }
 
 const handleLogout = async (req, res) => {
-    res.clearCookie('access_token');
     return res.status(201).json({
         'success': 'Successfully logged out 😏🍀.'
     });

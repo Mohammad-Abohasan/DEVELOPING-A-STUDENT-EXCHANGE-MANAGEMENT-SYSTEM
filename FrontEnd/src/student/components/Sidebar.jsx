@@ -13,7 +13,7 @@ import {
     Typography,
 } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
-import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import { useContext, useMemo, useState } from 'react';
@@ -21,10 +21,12 @@ import { ChevronLeft, Logout } from '@mui/icons-material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Offers from './Offers';
 import Requests from './Requests';
-import abohasanAvat from '../../avatarMohammad.jpg';
 import Dashboard from './Dashboard';
 import OfferDetails from './OfferDetails';
 import { AccessTokenContext } from '../../context/AccessTokenProvider';
+import Cookies from 'universal-cookie';
+import abohasanAvat from '../../avatarMohammad.jpg';
+import PageNotFound from './PageNotFound';
 
 const openedMixin = (theme) => ({
     width: 240,
@@ -75,6 +77,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const Sidebar = ({ open, setOpen }) => {
     const [selectedLink, setSelectedLink] = useState('');
     const { setAccessToken } = useContext(AccessTokenContext);
+    const cookie = new Cookies();
 
     const list = useMemo(() => [
         {
@@ -100,7 +103,8 @@ const Sidebar = ({ open, setOpen }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        setAccessToken('');
+        cookie.remove('Bearer');
+        setAccessToken(null);
         navigate('/');
     };
 
@@ -164,7 +168,7 @@ const Sidebar = ({ open, setOpen }) => {
                     </Tooltip>
                 </Box>
             </Drawer>
-            <Box sx={{ flexGrow: 1, p: 3 }}>
+            <Box sx={{ p: 3, width: `calc(100vw - ${open ? '257px' : '82px'})` }}>
                 <DrawerHeader />
                 <Routes>
                     <Route path="/dashboard" element={<Dashboard />} />
@@ -173,6 +177,7 @@ const Sidebar = ({ open, setOpen }) => {
                         <Route path=":offerID" element={<OfferDetails />} />
                     </Route>
                     <Route path="/requests" element={<Requests />} />
+                    <Route path="*" element={<PageNotFound />} />
                 </Routes>
             </Box>
         </>

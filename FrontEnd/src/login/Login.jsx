@@ -1,26 +1,22 @@
 import { useContext, useEffect, useState } from "react";
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   Sheet,
   FormControl,
   FormLabel,
   Input,
   Button,
+  autocompleteClasses,
 } from "@mui/joy";
 import axios from "../api/axios";
 import { AccessTokenContext } from "../context/AccessTokenProvider";
+import './Login.css';
+import Cookies from "universal-cookie";
+import headerLogTop from '../headerLogTop.png';
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <Button
@@ -36,8 +32,10 @@ function ModeToggle() {
 
 const Login = () => {
   const [data, setData] = useState({});
-  // const [isLogged, setIsLogged] = useState(false);
+  const [loginError, setLoginError] = useState(false);
   const { accessToken, setAccessToken } = useContext(AccessTokenContext);
+  const [mounted, setMounted] = useState(false)
+  const cookie = new Cookies();
 
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -52,29 +50,43 @@ const Login = () => {
           'Content-Type': 'application/json'
         }
       });
-      if (response.status === 200) {
-        setAccessToken(response.data.accessToken);
-      } else {
-        console.error(`Failed to login: ${response.status} ${response.statusText}`);
-      }
+      // console.log(response);
+      cookie.set('Bearer', response.data.accessToken);
+      const tokenCookie = cookie.get('Bearer');
+      setAccessToken(tokenCookie);
     } catch (error) {
-      console.error(`Failed to login: ${error}`);
+      if (error.response.status === 401)
+        setLoginError(true);
     }
   };
 
+  const handleKeyPress = async (e) => {
+    if (e.key === 'Enter') {
+      onSubmit(e);
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+  }, [])
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <>
-      {accessToken !== '' ? (
-        <Navigate to="/home" />
+      {accessToken ? (
+        <Navigate to="/home/dashboard" />
       ) : (
         <CssVarsProvider>
           <main>
             <ModeToggle />
             <Sheet
               sx={{
-                width: 300,
+                width: 550,
                 mx: "auto",
-                my: 4,
+                my: 20,
                 py: 3,
                 px: 2,
                 display: "flex",
@@ -85,15 +97,19 @@ const Login = () => {
               }}
               variant="outlined"
             >
+              <Link to="/">
+                <img src={headerLogTop} alt="headerTop-Logo" style={{ width: "100%" }} />
+              </Link>
               <FormControl>
                 <FormLabel>Username</FormLabel>
                 <Input
                   name="username"
                   type="text"
-                  placeholder="abohasan@email.com"
+                  placeholder="abohasan@gmail.com"
                   onChange={handleInputChange}
                   autoComplete="off"
                   required
+                  onKeyPress={handleKeyPress}
                 />
               </FormControl>
               <FormControl>
@@ -105,9 +121,13 @@ const Login = () => {
                   onChange={handleInputChange}
                   autoComplete="off"
                   required
+                  onKeyPress={handleKeyPress}
                 />
               </FormControl>
-              <Button style={{ backgroundColor: "#764abc", color: "white" }} sx={{ mt: 1 }} onClick={onSubmit}>
+              {loginError && (
+                <p className="loginError">Incorrect username or password</p>
+              )}
+              <Button style={{ backgroundColor: "#764abc", color: "white" }} onClick={onSubmit}>
                 Log in
               </Button>
             </Sheet>

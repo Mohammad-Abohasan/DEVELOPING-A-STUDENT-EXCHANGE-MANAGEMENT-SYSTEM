@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 export const AccessTokenContext = createContext();
 
 const AccessTokenProvider = (props) => {
-    const [accessToken, setAccessToken] = useState('');
+    const [accessToken, setAccessToken] = useState(null);
 
     const handleSetAccessToken = (newAccessToken) => {
         setAccessToken(newAccessToken);

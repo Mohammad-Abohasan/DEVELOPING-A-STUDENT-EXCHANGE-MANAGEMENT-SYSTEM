@@ -1,11 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { AccessTokenContext } from "../context/AccessTokenProvider";
 
 
 const Protect = () => {
   const { accessToken } = useContext(AccessTokenContext);
-  return accessToken !== '' ? <Outlet /> : <Navigate to="/"/>;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return accessToken ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default Protect;
