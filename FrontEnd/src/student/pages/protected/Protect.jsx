@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { AccessTokenContext } from "../context/AccessTokenProvider";
+import { AccessTokenContext } from "../../../context/AccessTokenProvider";
 
 
 const Protect = () => {

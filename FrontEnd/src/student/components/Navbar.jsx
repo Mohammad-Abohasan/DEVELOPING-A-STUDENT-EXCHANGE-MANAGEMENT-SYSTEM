@@ -11,8 +11,8 @@ import MuiAppBar from '@mui/material/AppBar';
 import { Brightness4, Brightness7, Menu } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import logo from '../../AArU.png';
+import Sidebar from '../components/Sidebar';
+import logo from '../../images/AArU.png';
 
 const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({

@@ -1,12 +1,12 @@
-import Login from "./login/Login";
 import { Routes, Route } from 'react-router-dom';
-import Home from './student/pages/Home';
-import Protect from './protected/Protect';
-import './App.css';
-import { useContext, useEffect } from "react";
-import { AccessTokenContext } from "./context/AccessTokenProvider";
 import Cookies from "universal-cookie";
-import PageNotFound from "./student/components/PageNotFound";
+import { useContext, useEffect } from "react";
+import Login from "./student/pages/login/Login";
+import Home from './student/pages/Home';
+import Protect from './student/pages/protected/Protect';
+import { AccessTokenContext } from "./context/AccessTokenProvider";
+import PageNotFound from "./student/pages/PageNotFound";
+import './App.css';
 
 function App() {
   const { setAccessToken } = useContext(AccessTokenContext);

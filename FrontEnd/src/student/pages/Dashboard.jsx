@@ -1,5 +1,5 @@
-import AArUDash1 from '../../AArUDash1.jpg';
-import AArUDash2 from '../../AArUDash2.jpg';
+import AArUDash1 from '../../images/AArUDash1.jpg';
+import AArUDash2 from '../../images/AArUDash2.jpg';
 
 const Dashboard = () => {
   return (

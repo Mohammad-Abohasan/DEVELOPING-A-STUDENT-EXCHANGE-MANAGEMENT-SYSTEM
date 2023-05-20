@@ -13,20 +13,20 @@ import {
     Typography,
 } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
-import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import { useContext, useMemo, useState } from 'react';
 import { ChevronLeft, Logout } from '@mui/icons-material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import Offers from './Offers';
-import Requests from './Requests';
-import Dashboard from './Dashboard';
-import OfferDetails from './OfferDetails';
-import { AccessTokenContext } from '../../context/AccessTokenProvider';
 import Cookies from 'universal-cookie';
-import abohasanAvat from '../../avatarMohammad.jpg';
-import PageNotFound from './PageNotFound';
+import Offers from '../pages/Offers';
+import Requests from '../pages/Requests';
+import Dashboard from '../pages/Dashboard';
+import OfferDetails from '../pages/OfferDetails';
+import { AccessTokenContext } from '../../context/AccessTokenProvider';
+import abohasanAvat from '../../images/avatarMohammad.jpg';
+import PageNotFound from '../pages/PageNotFound';
 
 const openedMixin = (theme) => ({
     width: 240,
@@ -174,7 +174,7 @@ const Sidebar = ({ open, setOpen }) => {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/offers" element={<Outlet />}>
                         <Route path="" element={<Offers />} />
-                        <Route path=":offerID" element={<OfferDetails />} />
+                        <Route path=":offerID/:hasApply" element={<OfferDetails />} />
                     </Route>
                     <Route path="/requests" element={<Requests />} />
                     <Route path="*" element={<PageNotFound />} />
