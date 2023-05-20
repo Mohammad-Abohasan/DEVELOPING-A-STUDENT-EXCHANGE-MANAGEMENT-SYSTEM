@@ -17,7 +17,20 @@ const viewRequests = async (req, res) => {
         const requests = await Request.findAll({
             where: {
                 student_id: student.id
-            }
+            },
+            include: [
+                {
+                    model: Offer,
+                    attributes: ['offer_date', 'train_start_date', 'train_end_date', 'branch_name'],
+                    include: [
+                        {
+                            model: University,
+                            as: 'university_src',
+                            attributes: ['name', 'country']
+                        }
+                    ]
+                }
+            ]
         })
         return res.status(200).json(requests);
     } catch (err) {
@@ -43,6 +56,38 @@ const cancelRequest = async (req, res) => {
         });
     }
 };
+
+const viewOfferDetails = async (req, res) => {
+    try {
+        const username = req.user;
+        const student = await Student.findOne({
+            where: {
+                username
+            }
+        });
+        const offerID = req.params.offerID;
+        const offerDetails = await Offer.findAll({
+            where: {
+                id: offerID,
+                stu_sex: student.gender,
+                major_name: student.major,
+                college_name: student.college
+            },
+            include: [
+                {
+                    model: University,
+                    as: 'university_src',
+                    attributes: ['name', 'country', 'city']
+                }
+            ]
+        });
+        await res.status(200).json(offerDetails);
+    } catch (err) {
+        res.status(500).json({
+            'message': err.message
+        });
+    }
+}
 
 const viewAvailableOffers = async (req, res) => {
     try {
@@ -81,6 +126,7 @@ const submitOffer = async (req, res) => {
     try {
         const username = req.user;
         const offerID = req.body.offer_id;
+        // console.log(offerID)
         const student = await Student.findOne({
             where: {
                 username
@@ -324,6 +370,7 @@ module.exports = {
     cancelRequest,
     viewAvailableOffers,
     submitOffer,
+    viewOfferDetails,
     viewInterests,
     addInterest,
     updateInterest,

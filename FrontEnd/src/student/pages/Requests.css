@@ -1,0 +1,19 @@
+.status-accepted {
+    color: green;
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: red;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-cancelled {
+    color: rgb(97, 97, 97);
+    font-weight: bold;
+}

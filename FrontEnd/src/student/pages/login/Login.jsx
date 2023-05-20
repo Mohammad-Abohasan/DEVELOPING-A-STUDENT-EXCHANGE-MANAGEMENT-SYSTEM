@@ -6,14 +6,13 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Button,
-  autocompleteClasses,
+  Button
 } from "@mui/joy";
-import axios from "../api/axios";
-import { AccessTokenContext } from "../context/AccessTokenProvider";
-import './Login.css';
 import Cookies from "universal-cookie";
-import headerLogTop from '../headerLogTop.png';
+import axios from "../../../api/axios";
+import { AccessTokenContext } from "../../../context/AccessTokenProvider";
+import './Login.css';
+import headerLogTop from '../../../images/headerLogTop.png';
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -74,6 +73,7 @@ const Login = () => {
     return null;
   }
 
+  console.log(accessToken)
   return (
     <>
       {accessToken ? (
@@ -105,7 +105,7 @@ const Login = () => {
                 <Input
                   name="username"
                   type="text"
-                  placeholder="abohasan@gmail.com"
+                  placeholder="m.s.abuhasan"
                   onChange={handleInputChange}
                   autoComplete="off"
                   required

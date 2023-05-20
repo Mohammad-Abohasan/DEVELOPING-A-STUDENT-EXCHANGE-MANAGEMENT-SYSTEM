@@ -9,7 +9,7 @@ const verifyJWT = require('../middleware/verifyJWT');
 router.use('/auth', authRouter);
 router.use('/student', studentRouter);
 router.use('/offer', offerRouter);
-router.use(verifyJWT);
+// router.use(verifyJWT);
 router.use('/user', userRouter);
 
 module.exports = router;

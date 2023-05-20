@@ -8,6 +8,7 @@ router.use(verifyJWT);
 router.get('/requests', studentController.viewRequests);
 router.patch('/cancelRequest', studentController.cancelRequest);
 router.get('/availableOffers', studentController.viewAvailableOffers);
+router.get('/availableOffers/:offerID', studentController.viewOfferDetails);
 router.post('/submitOffer', studentController.submitOffer);
 
 router.get('/interest', studentController.viewInterests);

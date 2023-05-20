@@ -10,20 +10,20 @@ import {
   useGridApiContext,
   useGridSelector
 } from "@mui/x-data-grid";
-import { format } from "date-fns";
-import MuiPagination from '@mui/material/Pagination';
 import Swal from "sweetalert2";
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material";
+import MuiPagination from '@mui/material/Pagination';
 import { useContext, useEffect, useState } from "react";
-import axios from '../../api/axios';
+import { ThemeProvider, createTheme } from "@mui/material";
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
-import Loading from './Loading';
+import axios from '../../api/axios';
+import Loading from '../components/Loading';
 
 const columns = [
   {
     field: "id",
-    headerName: "ID",
+    headerName: "Offer ID",
     width: 50,
     flex: 0.3
   },
@@ -89,7 +89,7 @@ const columns = [
     field: "details",
     headerName: "Details",
     renderCell: (params) => (
-      <Link to={`${params.id}`} className="btn btn-secondary btn-bg" style={{ width: "100%" }}>
+      <Link to={`${params.id}/apply`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
         Details
       </Link>
     ),
@@ -107,107 +107,98 @@ const theme = createTheme({
 });
 
 const Offers = () => {
-  const [offerID, setOfferID] = useState(1);
   const [offersData, setOffersData] = useState([]);
   const { accessToken } = useContext(AccessTokenContext);
 
+  const getAvailableOffers = async () => {
+    try {
+      const response = await axios.get('/student/availableOffers', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      const mappedData = response.data.map((offer, index) => ({
+        id: offer.id,
+        university_name: offer.university_src.name,
+        country_name: offer.university_src.country,
+        city: offer.university_src.city,
+        branch_name: offer.branch_name,
+        college_name: offer.college_name,
+        offer_date: offer.offer_date,
+        train_type: offer.train_type,
+        train_start_date: offer.train_start_date,
+        train_end_date: offer.train_end_date,
+        other_requirements: offer.other_requirements,
+      }));
+      setOffersData(mappedData);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
-    const getAvailableOffers = async () => {
+    getAvailableOffers();
+  }, []);
+
+  const handleCellClick = (params, event) => {
+    if (params.field === "apply") {
+      handleApply(params.row);
+    }
+  };
+
+  const handleApply = async (params) => {
+    const { value: confirmed } = await Swal.fire({
+      title: `Confirm applying for ${params.university_name} offer?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Apply!',
+      cancelButtonText: 'Cancel',
+      allowOutsideClick: false
+    });
+
+    if (confirmed) {
       try {
-        const response = await axios.get('/student/availableOffers', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        const mappedData = response.data.map((offer) => ({
-          id: offer.id,
-          university_name: offer.university_src.name,
-          country_name: offer.university_src.country,
-          city: offer.university_src.city,
-          branch_name: offer.branch_name,
-          college_name: offer.college_name,
-          offer_date: offer.offer_date,
-          train_type: offer.train_type,
-          train_start_date: offer.train_start_date,
-          train_end_date: offer.train_end_date,
-          other_requirements: offer.other_requirements,
-        }));
-        setOffersData(mappedData);
+        const response = await submitOffer(params);
+        const swalOptions = {
+          toast: true,
+          position: 'bottom-end',
+          showConfirmButton: false,
+          timer: 3000
+        };
+        if (response === 'Request submitted successfully 🥳') {
+          Swal.fire({
+            ...swalOptions,
+            title: 'Offer applied successfully!',
+            icon: 'success'
+          });
+        } else {
+          Swal.fire({
+            ...swalOptions,
+            title: 'Failed to apply for the offer',
+            text: response,
+            icon: 'error'
+          });
+        }
       } catch (err) {
         console.error(err);
       }
     }
-
-    getAvailableOffers();
-
-    return () => {
-    }
-  }, []);
-
-
-  // const handleCellClick = (params, event) => {
-  //   if (params.field === "apply") {
-  //     Swal.fire({
-  //       title: `Confirm applying for ${params.row.university_name} offer ? `,
-  //       icon: 'warning',
-  //       showCancelButton: true,
-  //       confirmButtonText: 'Apply!',
-  //       cancelButtonText: 'Cancel',
-  //       // toast: true,
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         Swal.fire({
-  //           title: 'Offer applied successfully!',
-  //           icon: 'success',
-  //           toast: true,
-  //           position: 'bottom-end',
-  //           showConfirmButton: false,
-  //           timer: 3000
-  //         });
-  //       }
-  //     });
-  //   }
-  // };
-
-  const handleCellClick = (params, event) => {
-    if (params.field === "apply") {
-      // Show offer details modal
-      Swal.fire({
-        title: params.row.university_name,
-        html: `Offer details: ${params.row.offer_details}`,
-        showCloseButton: true,
-        showCancelButton: false,
-        showConfirmButton: true,
-        confirmButtonText: 'Apply',
-        // Add any other options or customizations as needed
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Show confirmation dialog
-          Swal.fire({
-            title: `Confirm applying for ${params.row.university_name} offer?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Apply!',
-            cancelButtonText: 'Cancel',
-            // toast: true,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire({
-                title: 'Offer applied successfully!',
-                icon: 'success',
-                toast: true,
-                position: 'bottom-end',
-                showConfirmButton: false,
-                timer: 3000
-              });
-            }
-          });
-        }
-      });
-    }
   };
 
-  // skelton
+  const submitOffer = async (params) => {
+    try {
+      const response = await axios.post(`/student/submitOffer`, {
+        offer_id: params.id
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      return response.data.message;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   function CustomToolbar() {
     return (
@@ -248,8 +239,8 @@ const Offers = () => {
         <Loading />
       ) : (
         <>
-          <h2 className="title-table pt-4 pb-2 px-3">Available Offers</h2>
-          <div className="px-3" >
+          <h2 className="pt-4 pb-2 px-3">Available Offers</h2>
+          <div className="px-3 pb-5">
             <DataGrid
               disableRowSelectionOnClick={true}
               sx={{
@@ -282,7 +273,6 @@ const Offers = () => {
                   marginBottom: "0"
                 }
               }}
-
               autoHeight
               disableColumnMenu={true}
               onCellClick={handleCellClick}

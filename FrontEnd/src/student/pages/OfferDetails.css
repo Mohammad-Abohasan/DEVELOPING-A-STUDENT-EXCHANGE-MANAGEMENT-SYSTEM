@@ -1,0 +1,25 @@
+.offer-details {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.offer-details-item {
+    padding: 20px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.offer-details-item:last-child {
+    border-bottom: none;
+}
+
+.offer-details h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.offer-details p {
+    font-size: 14px;
+    margin: 0;
+}
