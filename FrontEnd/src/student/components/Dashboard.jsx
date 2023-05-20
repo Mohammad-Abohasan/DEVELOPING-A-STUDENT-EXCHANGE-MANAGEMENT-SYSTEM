@@ -1,3 +1,6 @@
+import AArUDash1 from '../../AArUDash1.jpg';
+import AArUDash2 from '../../AArUDash2.jpg';
+
 const Dashboard = () => {
   return (
     <>
@@ -9,11 +12,11 @@ const Dashboard = () => {
         </div>
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img src="http://www.aaru.edu.jo/TEMP_AARU_test/assets/images/a.sumaia2.jpg"
+            <img src={AArUDash1}
               className="d-block w-100" style={{ height: '580px' }} alt="..." />
           </div>
           <div className="carousel-item">
-            <img src="http://www.aaru.edu.jo/TEMP_AARU_test/assets/images/shutterstock_123603871-546x291.jpg"
+            <img src={AArUDash2}
               className="d-block w-100" style={{ height: '580px' }} alt="..." />
           </div>
         </div>
