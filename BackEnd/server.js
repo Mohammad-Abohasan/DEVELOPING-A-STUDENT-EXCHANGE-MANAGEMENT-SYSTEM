@@ -22,7 +22,9 @@ app.use(cookieParser());
 app.use(mainRouter);
 
 associations();
-sequelize.sync({ logging: false, alter: true })
+
+sequelize.options.logging = false;
+sequelize.sync({ alter: true })
   .then(() => {
     console.log("Database schema has been synchronized");
   })
