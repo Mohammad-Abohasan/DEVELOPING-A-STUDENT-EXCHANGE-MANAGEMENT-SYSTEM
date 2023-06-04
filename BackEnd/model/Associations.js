@@ -1,4 +1,4 @@
-const Image = require("./Image");
+// const Image = require("./Image");
 const Offer = require("./Offer");
 const Request = require("./Request");
 const Student = require("./Student");
@@ -19,8 +19,8 @@ const Associations = () => {
     Student.hasOne(Settings, { foreignKey: "student_id" });
     Settings.belongsTo(Student, { foreignKey: "student_id" });
 
-    User.hasOne(Image, { foreignKey: "username" });
-    Image.belongsTo(User, { foreignKey: "username" });
+    // User.hasOne(Image, { foreignKey: "username" });
+    // Image.belongsTo(User, { foreignKey: "username" });
 
     University.hasMany(Offer, { foreignKey: "university_id_src", as: "university_src" });
     Offer.belongsTo(University, { foreignKey: "university_id_src", as: "university_src" });

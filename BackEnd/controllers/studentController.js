@@ -81,6 +81,30 @@ const viewOfferDetails = async (req, res) => {
                 }
             ]
         });
+
+        // const OfferJoinRequest = await Offer.findAll({
+        //     where: {
+        //         id: offerID,
+        //         stu_sex: student.gender,
+        //         major_name: student.major,
+        //         college_name: student.college
+        //     },
+        //     include: [
+        //         {
+        //             model: University,
+        //             as: 'university_src',
+        //             attributes: ['name', 'country', 'city']
+        //         },
+        //         {
+        //             model: Request,
+        //             where: {
+        //                 student_id: student.id
+        //             },
+        //             attributes: ['id'],
+        //             required: false
+        //         }
+        //     ]
+        // });
         await res.status(200).json(offerDetails);
     } catch (err) {
         res.status(500).json({
@@ -114,6 +138,7 @@ const viewAvailableOffers = async (req, res) => {
                 }
             ]
         });
+
         await res.status(200).json(availableOffers);
     } catch (err) {
         res.status(500).json({

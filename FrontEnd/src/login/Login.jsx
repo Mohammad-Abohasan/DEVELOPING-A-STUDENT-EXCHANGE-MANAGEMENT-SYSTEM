@@ -9,10 +9,11 @@ import {
   Button
 } from "@mui/joy";
 import Cookies from "universal-cookie";
-import axios from "../../../api/axios";
-import { AccessTokenContext } from "../../../context/AccessTokenProvider";
+import axios from "../api/axios";
+import { AccessTokenContext } from "../context/AccessTokenProvider";
 import './Login.css';
-import headerLogTop from '../../../images/headerLogTop.png';
+import headerLogTop from '../images/headerLogTop.png';
+import { RoleContext } from "../context/RoleProvider";
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -33,6 +34,7 @@ const Login = () => {
   const [data, setData] = useState({});
   const [loginError, setLoginError] = useState(false);
   const { accessToken, setAccessToken } = useContext(AccessTokenContext);
+  const { role, setRole } = useContext(RoleContext);
   const [mounted, setMounted] = useState(false)
   const cookie = new Cookies();
 
@@ -49,13 +51,19 @@ const Login = () => {
           'Content-Type': 'application/json'
         }
       });
-      // console.log(response);
+      // console.log(response.data.role)
+      cookie.set('Role', response.data.role);
       cookie.set('Bearer', response.data.accessToken);
       const tokenCookie = cookie.get('Bearer');
+      const roleCookie = cookie.get('Role');
       setAccessToken(tokenCookie);
+      setRole(roleCookie);
     } catch (error) {
-      if (error.response.status === 401)
+      if (error.response.status === 401) {
         setLoginError(true);
+      } else {
+        console.error(error);
+      }
     }
   };
 
@@ -73,11 +81,10 @@ const Login = () => {
     return null;
   }
 
-  console.log(accessToken)
   return (
     <>
       {accessToken ? (
-        <Navigate to="/home/dashboard" />
+        <Navigate to={role === 'Student' ? '/home/dashboard' : '/universityRepresentative/publishedOffers'} />
       ) : (
         <CssVarsProvider>
           <main>

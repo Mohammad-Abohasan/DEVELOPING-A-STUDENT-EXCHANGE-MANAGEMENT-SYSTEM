@@ -7,10 +7,10 @@ const { Model } = require('sequelize');
 require('dotenv').config();
 
 const handleNewUser = async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
+    const { username, password, role } = req.body;
+    if (!username || !password || !role) {
         return res.status(400).json({
-            'message': 'Username and password are required.'
+            'message': 'Username, password, and role are required.'
         });
     }
     // check for duplicate usernames in the database
@@ -28,7 +28,7 @@ const handleNewUser = async (req, res) => {
         // store the new user
         User.create({
             username,
-            role: "Student",
+            role,
             password: hashedPassword
         });
         res.status(201).json({

@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
 import axios from "../../api/axios";
-import Loading from "../components/Loading";
+import Loading from "../../loading/Loading";
 import './Requests.css';
 
 const columns = [

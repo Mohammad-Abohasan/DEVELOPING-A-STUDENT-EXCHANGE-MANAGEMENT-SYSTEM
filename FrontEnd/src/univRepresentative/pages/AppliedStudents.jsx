@@ -4,15 +4,14 @@ import {
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
-  // GridToolbarExport,
+  GridToolbarExport,
   GridToolbarFilterButton,
   gridPageCountSelector,
   useGridApiContext,
   useGridSelector
 } from "@mui/x-data-grid";
-import Swal from "sweetalert2";
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MuiPagination from '@mui/material/Pagination';
 import { useContext, useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
@@ -21,81 +20,93 @@ import axios from '../../api/axios';
 import Loading from '../../loading/Loading';
 
 const columns = [
+  // "notes": null,
+  // "offer_id": 278,
+  // "student_id": 201913064,
+  // "student": {
+  //     "name": "Mohammad Ameen S. A. Abuhasan",
+  //     "gpa": 92.9,
+  //     "major": "Computer Systems Engineering",
+  //     "english_1_mark": 98,
+  //     "english_2_mark": 95
+  // }
   {
     field: "id",
+    headerName: "Request ID",
+    width: 50,
+    flex: 0.3
+  },
+  {
+    field: "student_id",
+    headerName: "Student ID",
+    width: 50,
+    flex: 0.3
+  },
+  {
+    field: "student_name",
+    headerName: "Student Name",
+    width: 200,
+    flex: 0.7
+  },
+  {
+    field: "offer_id",
     headerName: "Offer ID",
     width: 50,
     flex: 0.3
   },
   {
-    field: "university_name",
-    headerName: "University Name",
-    width: 200,
-    flex: 0.7
-  },
-  {
-    field: "offer_date",
-    headerName: "Deadline",
+    field: "request_date",
+    headerName: "Request Date",
     width: 115,
     valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
     flex: 0.4
   },
   {
-    field: "train_type",
-    headerName: "Type",
+    field: "notes",
+    headerName: "Notes",
     flex: 0.4
   },
   {
-    field: "country_name",
-    headerName: "Country",
+    field: "request_status",
+    headerName: "Request Status",
+    cellClassName: (params) => {
+      const status = params.value?.toLowerCase();
+      if (status === "accepted") {
+        return "status-accepted";
+      } else if (status === "rejected") {
+        return "status-rejected";
+      } else if (status === "pending") {
+        return "status-pending";
+      } else if (status === "cancelled") {
+        return "status-cancelled";
+      }
+      return "";
+    },
+    width: 80,
     flex: 0.4
   },
-  {
-    field: "train_start_date",
-    headerName: "Start date",
-    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
-    width: 115,
-    flex: 0.4
-  },
-  {
-    field: "train_end_date",
-    headerName: "End date",
-    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
-    width: 115,
-    flex: 0.4
-  },
-  {
-    field: "branch_name",
-    headerName: "Branch",
-    width: 100,
-    flex: 0.4
-  },
-  {
-    field: "other_requirements",
-    headerName: "Other requirements",
-    flex: 0.7
-  },
-  {
-    field: "apply",
-    headerName: "Apply",
-    renderCell: (params) =>
-      <button className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
-        Apply
-      </button>,
-    sortable: false,
-    flex: 0.4
-  },
-  {
-    field: "details",
-    headerName: "Details",
-    renderCell: (params) => (
-      <Link to={`${params.id}/apply`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
-        Details
-      </Link>
-    ),
-    sortable: false,
-    flex: 0.4
-  }
+
+  // {
+  //   field: "apply",
+  //   headerName: "View students",
+  //   renderCell: (params) =>
+  //     <Link to={`${params.id}`}className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
+  //       View students
+  //     </Link>,
+  //   sortable: false,
+  //   flex: 0.6
+  // },
+  // {
+  //   field: "details",
+  //   headerName: "Details",
+  //   renderCell: (params) => (
+  //     <Link to={`/universityRepresentative/archivedOffers/${params.id}`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
+  //       Details
+  //     </Link>
+  //   ),
+  //   sortable: false,
+  //   flex: 0.4
+  // }
 ];
 
 const theme = createTheme({
@@ -106,30 +117,31 @@ const theme = createTheme({
   },
 });
 
-const Offers = () => {
+const AppliedStudents = () => {
+  const { offerID } = useParams();
   const [offersData, setOffersData] = useState([]);
   const { accessToken } = useContext(AccessTokenContext);
 
-  const getAvailableOffers = async () => {
+  const getAppliedStudents = async () => {
     try {
-      const response = await axios.get('/student/availableOffers', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      // console.log(response.data)
-      const mappedData = response.data.map((offer, index) => ({
-        id: offer.id,
-        university_name: offer.university_src.name,
-        country_name: offer.university_src.country,
-        city: offer.university_src.city,
-        branch_name: offer.branch_name,
-        college_name: offer.college_name,
-        offer_date: offer.offer_date,
-        train_type: offer.train_type,
-        train_start_date: offer.train_start_date,
-        train_end_date: offer.train_end_date,
-        other_requirements: offer.other_requirements,
+      const response = await axios.get(`/offer/studentList/${offerID}`,
+        {
+          offer_id: offerID
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+      console.log(response);
+      const mappedData = response.data.data.map((request, index) => ({
+        id: request.id,
+        student_id: request.student_id,
+        student_name: request.student.name,
+        offer_id: request.offer_id,
+        request_date: request.request_date,
+        notes: request.notes,
+        request_status: request.status,
       }));
       setOffersData(mappedData);
     } catch (err) {
@@ -138,68 +150,8 @@ const Offers = () => {
   }
 
   useEffect(() => {
-    getAvailableOffers();
+    getAppliedStudents();
   }, []);
-
-  const handleCellClick = (params, event) => {
-    if (params.field === "apply") {
-      handleApply(params.row);
-    }
-  };
-
-  const handleApply = async (params) => {
-    const { value: confirmed } = await Swal.fire({
-      title: `Confirm applying for ${params.university_name} offer?`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Apply!',
-      cancelButtonText: 'Cancel',
-      allowOutsideClick: false
-    });
-
-    if (confirmed) {
-      try {
-        const response = await submitOffer(params);
-        const swalOptions = {
-          toast: true,
-          position: 'bottom-end',
-          showConfirmButton: false,
-          timer: 3000
-        };
-        if (response === 'Request submitted successfully 🥳') {
-          Swal.fire({
-            ...swalOptions,
-            title: 'Offer applied successfully!',
-            icon: 'success'
-          });
-        } else {
-          Swal.fire({
-            ...swalOptions,
-            title: 'Failed to apply for the offer',
-            text: response,
-            icon: 'error'
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
-
-  const submitOffer = async (params) => {
-    try {
-      const response = await axios.post(`/student/submitOffer`, {
-        offer_id: params.id
-      }, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      return response.data.message;
-    } catch (err) {
-      console.error(err);
-    }
-  }
 
   function CustomToolbar() {
     return (
@@ -207,6 +159,7 @@ const Offers = () => {
         <GridToolbarColumnsButton style={{ color: '#146eb4' }} />
         <GridToolbarFilterButton style={{ color: '#146eb4' }} />
         <GridToolbarDensitySelector style={{ color: '#146eb4' }} />
+        <GridToolbarExport style={{ color: '#146eb4' }} />
       </GridToolbarContainer>
     );
   }
@@ -240,7 +193,7 @@ const Offers = () => {
         <Loading />
       ) : (
         <>
-          <h2 className="pt-4 pb-2 px-3">Available Offers</h2>
+          <h2 className="pt-4 pb-2 px-3">Applied Students</h2>
           <div className="px-3 pb-5">
             <DataGrid
               disableRowSelectionOnClick={true}
@@ -276,7 +229,6 @@ const Offers = () => {
               }}
               autoHeight
               disableColumnMenu={true}
-              onCellClick={handleCellClick}
               rows={offersData}
               columns={columns}
               initialState={{
@@ -297,4 +249,4 @@ const Offers = () => {
   );
 };
 
-export default Offers;
+export default AppliedStudents;
