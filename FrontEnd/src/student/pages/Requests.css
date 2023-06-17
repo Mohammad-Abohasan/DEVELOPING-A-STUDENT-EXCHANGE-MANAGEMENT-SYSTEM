@@ -1,19 +1,29 @@
-.status-accepted {
-    color: green;
+.status-accepted,
+.status-rejected,
+.status-pending,
+.status-cancelled {
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 5px;
     font-weight: bold;
+}
+
+.status-accepted {
+    background: rgba(40, 199, 111, 0.16);
+    color: #28C76F;
 }
 
 .status-rejected {
-    color: red;
-    font-weight: bold;
+    background: rgba(234, 84, 85, 0.16);
+    color: #EA5455;
 }
 
 .status-pending {
-    color: orange;
-    font-weight: bold;
+    background: rgba(115, 103, 240, 0.16);
+    color: #7367F0;
 }
 
 .status-cancelled {
-    color: rgb(97, 97, 97);
-    font-weight: bold;
+    background: rgba(169, 169, 169, 0.16);
+    color: #777777;
 }

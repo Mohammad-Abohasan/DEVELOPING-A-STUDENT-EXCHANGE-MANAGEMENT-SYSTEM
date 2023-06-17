@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
 import axios from "../../api/axios";
-import Loading from "../components/Loading";
+import Loading from "../../loading/Loading";
 import './Requests.css';
 
 const columns = [
@@ -48,19 +48,11 @@ const columns = [
   {
     field: "request_status",
     headerName: "Request Status",
-    cellClassName: (params) => {
-      const status = params.value?.toLowerCase();
-      if (status === "accepted") {
-        return "status-accepted";
-      } else if (status === "rejected") {
-        return "status-rejected";
-      } else if (status === "pending") {
-        return "status-pending";
-      } else if (status === "cancelled") {
-        return "status-cancelled";
-      }
-      return "";
-    },
+    renderCell: (params) => (
+      <p className={`status-${params.value?.toLowerCase()}`} >
+        {params.value}
+      </p>
+    ),
     width: 80,
     flex: 0.4
   },
@@ -95,7 +87,7 @@ const columns = [
     field: "cancel_request",
     headerName: "Cancel Request",
     renderCell: (params) =>
-      <button className='btn btn-bg' disabled={params.row.request_status?.toLowerCase() === 'cancelled'} style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
+      <button className='btn btn-bg' disabled={params.row.request_status?.toLowerCase() !== 'pending'} style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
         Cancel request
       </button>,
     sortable: false,

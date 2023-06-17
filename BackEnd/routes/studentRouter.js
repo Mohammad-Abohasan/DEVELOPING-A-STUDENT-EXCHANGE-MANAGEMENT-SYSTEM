@@ -17,6 +17,5 @@ router.patch('/updateInterest', studentController.updateInterest);
 router.delete('/removeInterest', studentController.cancelInterest);
 router.post('/interestOffers', studentController.getInterestOffer);
 
-router.get('/studentDetails', studentController.viewStudentDetails);
 
 module.exports = router;

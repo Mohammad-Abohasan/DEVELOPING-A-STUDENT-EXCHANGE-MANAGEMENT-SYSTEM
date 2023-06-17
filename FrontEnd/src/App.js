@@ -1,9 +1,12 @@
 import { Routes, Route } from 'react-router-dom';
 import Cookies from "universal-cookie";
 import { useContext, useEffect } from "react";
-import Login from "./student/pages/login/Login";
+import Login from "./login/Login";
+import ForgotPassword from './login/ForgotPassword';
+import ResetPassword from './login/ResetPassword';
 import Home from './student/pages/Home';
-import Protect from './student/pages/protected/Protect';
+import UnivRep from './univRepresentative/pages/UnivRep';
+import Protect from './protected/Protect';
 import { AccessTokenContext } from "./context/AccessTokenProvider";
 import PageNotFound from "./student/pages/PageNotFound";
 import './App.css';
@@ -21,10 +24,14 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="" element={<Login />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetPassword/:resetToken" element={<ResetPassword />} />
         <Route element={<Protect />} >
           <Route path="/home/*" element={<Home />} />
+          <Route path="/universityRepresentative/*" element={<UnivRep />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </div>
   );

@@ -9,16 +9,19 @@ import {
   Button
 } from "@mui/joy";
 import Cookies from "universal-cookie";
-import axios from "../../../api/axios";
-import { AccessTokenContext } from "../../../context/AccessTokenProvider";
+import axios from "../api/axios";
+import { AccessTokenContext } from "../context/AccessTokenProvider";
 import './Login.css';
-import headerLogTop from '../../../images/headerLogTop.png';
+import headerLogTop from '../images/headerLogTop.png';
+import { RoleContext } from "../context/RoleProvider";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
 
   return (
     <Button
+      sx={{ margin: 1 }}
       variant="outlined"
       onClick={() => {
         setMode(mode === "light" ? "dark" : "light");
@@ -33,7 +36,8 @@ const Login = () => {
   const [data, setData] = useState({});
   const [loginError, setLoginError] = useState(false);
   const { accessToken, setAccessToken } = useContext(AccessTokenContext);
-  const [mounted, setMounted] = useState(false)
+  const { role, setRole } = useContext(RoleContext);
+  const [mounted, setMounted] = useState(false);
   const cookie = new Cookies();
 
   const handleInputChange = (event) => {
@@ -49,13 +53,19 @@ const Login = () => {
           'Content-Type': 'application/json'
         }
       });
-      // console.log(response);
+      // console.log(response.data.role)
+      cookie.set('Role', response.data.role);
       cookie.set('Bearer', response.data.accessToken);
       const tokenCookie = cookie.get('Bearer');
+      const roleCookie = cookie.get('Role');
       setAccessToken(tokenCookie);
+      setRole(roleCookie);
     } catch (error) {
-      if (error.response.status === 401)
+      if (error.response.status === 401) {
         setLoginError(true);
+      } else {
+        console.error(error);
+      }
     }
   };
 
@@ -73,11 +83,10 @@ const Login = () => {
     return null;
   }
 
-  console.log(accessToken)
   return (
     <>
       {accessToken ? (
-        <Navigate to="/home/dashboard" />
+        <Navigate to={role === 'Student' ? '/home/dashboard' : '/universityRepresentative/publishedOffers'} />
       ) : (
         <CssVarsProvider>
           <main>
@@ -125,11 +134,14 @@ const Login = () => {
                 />
               </FormControl>
               {loginError && (
-                <p className="loginError">Incorrect username or password</p>
+                <p className="inputError">Incorrect username or password</p>
               )}
               <Button style={{ backgroundColor: "#764abc", color: "white" }} onClick={onSubmit}>
                 Log in
               </Button>
+              <Link to={"/forgotPassword"} style={{ color: "#764abc" }}>
+                Forgot password?
+              </Link>
             </Sheet>
           </main>
         </CssVarsProvider>

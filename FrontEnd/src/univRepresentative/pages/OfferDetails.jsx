@@ -1,80 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import { Container, Row, Col, ListGroup } from 'react-bootstrap';
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
 import axios from '../../api/axios';
 import PageNotFound from "./PageNotFound";
-import './OfferDetails.css';
 
 const OfferDetails = () => {
-  const { hasApply } = useParams('apply');
-  const offerID = useParams().offerID;
+  const { offerType, offerID } = useParams();
   const [offerData, setOfferData] = useState([]);
   const { accessToken } = useContext(AccessTokenContext);
 
-  const handleApply = async () => {
-    const { value: confirmed } = await Swal.fire({
-      title: `Confirm applying for ${offerData?.university_src?.name} offer?`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Apply!',
-      cancelButtonText: 'Cancel',
-      allowOutsideClick: false
-    });
-
-    if (confirmed) {
-      try {
-        const response = await submitOffer();
-        const swalOptions = {
-          toast: true,
-          position: 'bottom-end',
-          showConfirmButton: false,
-          timer: 3000
-        };
-        if (response === 'Request submitted successfully 🥳') {
-          Swal.fire({
-            ...swalOptions,
-            title: 'Offer applied successfully!',
-            icon: 'success'
-          });
-        } else {
-          Swal.fire({
-            ...swalOptions,
-            title: 'Failed to apply for the offer',
-            text: response,
-            icon: 'error'
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
-
-  const submitOffer = async () => {
-    try {
-      const response = await axios.post(`/student/submitOffer`, {
-        offer_id: offerData.id
-      }, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      return response.data.message;
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   const getOfferDetails = async () => {
     try {
-      const response = await axios.get(`/student/availableOffers/${offerID}`, {
+      const response = await axios.get(`/offer/${offerType}/${offerID}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      setOfferData(response.data[0]);
+      setOfferData(response.data.data[0]);
     } catch (err) {
       console.error(err);
     }
@@ -86,7 +29,7 @@ const OfferDetails = () => {
 
   return (
     <>
-      {!offerData || (hasApply !== 'apply' && hasApply !== 'noApply') ? <PageNotFound /> : (
+      {!offerData ? <PageNotFound /> : (
         <>
           <Container className="pb-2 px-3">
             <h2 className="pt-4 pb-2 px-3">Offer Details</h2>
@@ -232,21 +175,6 @@ const OfferDetails = () => {
                     </Col>
                   </Row>
                 </ListGroup.Item>
-
-                {hasApply === 'apply' &&
-                  <ListGroup.Item className="offer-details-item">
-                    <Row>
-                      <Col className="text-center">
-                        <button
-                          className="btn btn-bg"
-                          style={{ backgroundColor: "#764abc", color: "white" }}
-                          onClick={handleApply}
-                        >
-                          Apply
-                        </button>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>}
               </ListGroup>
             </Container>
           </Container>

@@ -4,7 +4,6 @@ import {
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
-  // GridToolbarExport,
   GridToolbarFilterButton,
   gridPageCountSelector,
   useGridApiContext,
@@ -12,18 +11,18 @@ import {
 } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MuiPagination from '@mui/material/Pagination';
 import { useContext, useEffect, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
-import axios from '../../api/axios';
-import Loading from '../../loading/Loading';
+import axios from "../../api/axios";
+import Loading from "../../loading/Loading";
 
 const columns = [
   {
     field: "id",
-    headerName: "Offer ID",
+    headerName: "Request ID",
     width: 50,
     flex: 0.3
   },
@@ -41,25 +40,31 @@ const columns = [
     flex: 0.4
   },
   {
-    field: "train_type",
-    headerName: "Type",
-    flex: 0.4
-  },
-  {
     field: "country_name",
     headerName: "Country",
     flex: 0.4
   },
   {
+    field: "request_status",
+    headerName: "Request Status",
+    renderCell: (params) => (
+      <p className={`status-${params.value?.toLowerCase()}`} >
+        {params.value}
+      </p>
+    ),
+    width: 80,
+    flex: 0.4
+  },
+  {
     field: "train_start_date",
-    headerName: "Start date",
+    headerName: "Offer Start date",
     valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
     width: 115,
     flex: 0.4
   },
   {
     field: "train_end_date",
-    headerName: "End date",
+    headerName: "Offer End date",
     valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
     width: 115,
     flex: 0.4
@@ -71,25 +76,17 @@ const columns = [
     flex: 0.4
   },
   {
-    field: "other_requirements",
-    headerName: "Other requirements",
-    flex: 0.7
-  },
-  {
-    field: "apply",
-    headerName: "Apply",
-    renderCell: () =>
-      <button className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
-        Apply
-      </button>,
-    sortable: false,
+    field: "request_date",
+    headerName: "Request date",
+    width: 115,
+    valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
     flex: 0.4
   },
   {
     field: "details",
     headerName: "Details",
     renderCell: (params) => (
-      <Link to={`${params.id}/apply`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
+      <Link to={`../offers/${params.row.offer_id}/noApply`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
         Details
       </Link>
     ),
@@ -106,76 +103,77 @@ const theme = createTheme({
   },
 });
 
-const Offers = () => {
-  const [offersData, setOffersData] = useState([]);
+const StudentArchive = () => {
+  const { studentID } = useParams();
+  const [requestsData, setRequestsData] = useState([]);
   const { accessToken } = useContext(AccessTokenContext);
 
-  const getAvailableOffers = async () => {
+  const getRequests = async () => {
     try {
-      const response = await axios.get('/student/availableOffers', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      // console.log(response.data)
-      const mappedData = response.data.map((offer, index) => ({
-        id: offer.id,
-        university_name: offer.university_src.name,
-        country_name: offer.university_src.country,
-        city: offer.university_src.city,
-        branch_name: offer.branch_name,
-        college_name: offer.college_name,
-        offer_date: offer.offer_date,
-        train_type: offer.train_type,
-        train_start_date: offer.train_start_date,
-        train_end_date: offer.train_end_date,
-        other_requirements: offer.other_requirements,
+      const response = await axios.get(`/offer/studentArchive/${studentID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+      console.log(response.data);
+      const mappedData = response.data.map((request, index) => ({
+        id: index + 1,
+        offer_id: request.offer_id,
+        university_name: request.offer.university_src.name,
+        offer_date: request.offer.offer_date,
+        country_name: request.offer.university_src.country,
+        request_status: request.status,
+        train_start_date: request.offer.train_start_date,
+        train_end_date: request.offer.train_end_date,
+        branch_name: request.offer.branch_name,
+        request_date: request.request_date
       }));
-      setOffersData(mappedData);
+      setRequestsData(mappedData);
     } catch (err) {
       console.error(err);
     }
   }
 
   useEffect(() => {
-    getAvailableOffers();
+    getRequests();
   }, []);
 
   const handleCellClick = (params, event) => {
-    if (params.field === "apply") {
-      handleApply(params.row);
+    if (params.field === "cancel_request" && params.row.request_status?.toLowerCase() !== 'cancelled') {
+      handleCancelRequest(params.row);
     }
   };
 
-  const handleApply = async (params) => {
+  const handleCancelRequest = async (params) => {
     const { value: confirmed } = await Swal.fire({
-      title: `Confirm applying for ${params.university_name} offer?`,
-      icon: 'question',
+      title: `Confirm canceling the request for ${params.university_name} offer?`,
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Apply!',
-      cancelButtonText: 'Cancel',
-      allowOutsideClick: false
+      confirmButtonText: 'Cancel Request!',
+      cancelButtonText: 'No, Keep Request',
     });
 
     if (confirmed) {
       try {
-        const response = await submitOffer(params);
+        const response = await cancelOffer(params);
         const swalOptions = {
           toast: true,
           position: 'bottom-end',
           showConfirmButton: false,
           timer: 3000
         };
-        if (response === 'Request submitted successfully 🥳') {
+        if (response === 'Request cancelled successfully 🙂') {
+          getRequests();
           Swal.fire({
             ...swalOptions,
-            title: 'Offer applied successfully!',
-            icon: 'success'
+            title: 'Request canceled successfully!',
+            icon: 'success',
           });
         } else {
           Swal.fire({
             ...swalOptions,
-            title: 'Failed to apply for the offer',
+            title: 'Request cancellation failed!',
             text: response,
             icon: 'error'
           });
@@ -186,15 +184,16 @@ const Offers = () => {
     }
   };
 
-  const submitOffer = async (params) => {
+  const cancelOffer = async (params) => {
     try {
-      const response = await axios.post(`/student/submitOffer`, {
-        offer_id: params.id
+      const response = await axios.patch(`/student/cancelRequest`, {
+        request_id: params.id
       }, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
       });
+      // console.log(response.data.message);
       return response.data.message;
     } catch (err) {
       console.error(err);
@@ -204,9 +203,9 @@ const Offers = () => {
   function CustomToolbar() {
     return (
       <GridToolbarContainer style={{ backgroundColor: 'whitesmoke' }}>
-        <GridToolbarColumnsButton style={{ color: '#146eb4' }} />
-        <GridToolbarFilterButton style={{ color: '#146eb4' }} />
-        <GridToolbarDensitySelector style={{ color: '#146eb4' }} />
+        <GridToolbarColumnsButton style={{ color: '#146EB4' }} />
+        <GridToolbarFilterButton style={{ color: '#146EB4' }} />
+        <GridToolbarDensitySelector style={{ color: '#146EB4' }} />
       </GridToolbarContainer>
     );
   }
@@ -236,11 +235,11 @@ const Offers = () => {
 
   return (
     <>
-      {offersData.length === 0 ? (
+      {requestsData.length === 0 ? (
         <Loading />
       ) : (
         <>
-          <h2 className="pt-4 pb-2 px-3">Available Offers</h2>
+          <h2 className="pt-4 pb-2 px-3" sx={{ fontSize: '40px' }}>Student Archive</h2>
           <div className="px-3 pb-5">
             <DataGrid
               disableRowSelectionOnClick={true}
@@ -261,7 +260,7 @@ const Offers = () => {
                   fontSize: '16px',
                 },
                 '& .MuiDataGrid-columnHeader': {
-                  backgroundColor: '#ECF1F1',
+                  backgroundColor: '#ecf1f1',
                   color: '#7A7E8D',
                   '&:hover': {
                     backgroundColor: '#E1E1E1',
@@ -277,7 +276,7 @@ const Offers = () => {
               autoHeight
               disableColumnMenu={true}
               onCellClick={handleCellClick}
-              rows={offersData}
+              rows={requestsData}
               columns={columns}
               initialState={{
                 pagination: {
@@ -297,4 +296,4 @@ const Offers = () => {
   );
 };
 
-export default Offers;
+export default StudentArchive;

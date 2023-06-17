@@ -33,7 +33,7 @@ const handleLogin = async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '1d' }
         );
-        res.json({ accessToken });
+        res.json({ accessToken, role });
         //     httpOnly: true,
         //     sameSite: 'None',
         //     maxAge: 24 * 60 * 60 * 1000
