@@ -28,6 +28,8 @@ import PendingOffers from '../pages/PendingOffers';
 import PageNotFound from '../../student/pages/PageNotFound';
 import OfferDetails from '../pages/OfferDetails';
 import AppliedStudents from '../pages/AppliedStudents';
+import StudentArchive from '../pages/StudentArchive';
+import StudentDetails from '../pages/StudentDetails';
 
 const openedMixin = (theme) => ({
     width: 240,
@@ -185,6 +187,8 @@ const Sidebar = ({ open, setOpen }) => {
                     </Route>
                     <Route path=":offerType/:offerID" element={<OfferDetails />} />
                     <Route path="/AppliedStudents/:offerID" element={<AppliedStudents />} />
+                    <Route path="/StudentArchive/:studentID" element={<StudentArchive />} />
+                    <Route path="/StudentDetails/:studentID/:offerID" element={<StudentDetails />} />
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>
             </Box>

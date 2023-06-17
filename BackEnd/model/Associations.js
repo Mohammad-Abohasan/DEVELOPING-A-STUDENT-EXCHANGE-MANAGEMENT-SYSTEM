@@ -19,9 +19,6 @@ const Associations = () => {
     Student.hasOne(Settings, { foreignKey: "student_id" });
     Settings.belongsTo(Student, { foreignKey: "student_id" });
 
-    // User.hasOne(Image, { foreignKey: "username" });
-    // Image.belongsTo(User, { foreignKey: "username" });
-
     University.hasMany(Offer, { foreignKey: "university_id_src", as: "university_src" });
     Offer.belongsTo(University, { foreignKey: "university_id_src", as: "university_src" });
 

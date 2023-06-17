@@ -18,6 +18,7 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import { AccessTokenContext } from "../../context/AccessTokenProvider";
 import axios from '../../api/axios';
 import Loading from '../../loading/Loading';
+import Swal from "sweetalert2";
 
 const columns = [
   // "notes": null,
@@ -32,10 +33,16 @@ const columns = [
   // }
   {
     field: "id",
-    headerName: "Request ID",
-    width: 50,
-    flex: 0.3
+    headerName: "ID",
+    width: 20,
+    flex: 0.1
   },
+  // {
+  //   field: "offer_id",
+  //   headerName: "Offer ID",
+  //   width: 50,
+  //   flex: 0.3
+  // },
   {
     field: "student_id",
     headerName: "Student ID",
@@ -46,20 +53,49 @@ const columns = [
     field: "student_name",
     headerName: "Student Name",
     width: 200,
-    flex: 0.7
+    flex: 0.4
   },
   {
-    field: "offer_id",
-    headerName: "Offer ID",
+    field: "student_gpa",
+    headerName: "GPA",
     width: 50,
-    flex: 0.3
+    flex: 0.2
+  },
+  {
+    field: "student_major",
+    headerName: "Major",
+    width: 200,
+    flex: 0.6
   },
   {
     field: "request_date",
     headerName: "Request Date",
     width: 115,
     valueFormatter: (params) => format(new Date(params.value), "dd/MM/yyyy"),
-    flex: 0.4
+    flex: 0.3
+  },
+  {
+    field: "english_1_mark",
+    headerName: "English 101 Mark",
+    width: 50,
+    flex: 0.3
+  },
+  {
+    field: "english_2_mark",
+    headerName: "English 102 Mark",
+    width: 50,
+    flex: 0.3
+  },
+  {
+    field: "request_status",
+    headerName: "Request Status",
+    renderCell: (params) => (
+      <p className={`status-${params.value?.toLowerCase()}`} >
+        {params.value}
+      </p>
+    ),
+    width: 80,
+    flex: 0.3
   },
   {
     field: "notes",
@@ -67,35 +103,36 @@ const columns = [
     flex: 0.4
   },
   {
-    field: "request_status",
-    headerName: "Request Status",
-    cellClassName: (params) => {
-      const status = params.value?.toLowerCase();
-      if (status === "accepted") {
-        return "status-accepted";
-      } else if (status === "rejected") {
-        return "status-rejected";
-      } else if (status === "pending") {
-        return "status-pending";
-      } else if (status === "cancelled") {
-        return "status-cancelled";
-      }
-      return "";
-    },
-    width: 80,
+    field: "editNote",
+    headerName: "Add/Edit Note",
+    renderCell: () =>
+      <button className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
+        Add/Edit
+      </button>,
+    sortable: false,
     flex: 0.4
   },
+  {
+    field: "viewStudentArchive",
+    headerName: "Student archive",
+    renderCell: (params) =>
+      <Link to={`/universityRepresentative/StudentArchive/${params.row.student_id}`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
+        Student archive
+      </Link>,
+    sortable: false,
+    flex: 0.6
+  },
+  {
+    field: "viewStudentDetails",
+    headerName: "Student details",
+    renderCell: (params) =>
+      <Link to={`/universityRepresentative/StudentDetails/${params.row.student_id}/${params.row.offer_id}`} className="btn btn-bg" style={{ width: "100%", backgroundColor: "#146eb4", color: "#FFFFFF" }}>
+        Student details
+      </Link>,
+    sortable: false,
+    flex: 0.5
+  },
 
-  // {
-  //   field: "apply",
-  //   headerName: "View students",
-  //   renderCell: (params) =>
-  //     <Link to={`${params.id}`}className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
-  //       View students
-  //     </Link>,
-  //   sortable: false,
-  //   flex: 0.6
-  // },
   // {
   //   field: "details",
   //   headerName: "Details",
@@ -126,24 +163,71 @@ const AppliedStudents = () => {
     try {
       const response = await axios.get(`/offer/studentList/${offerID}`,
         {
-          offer_id: offerID
-        },
-        {
           headers: {
             Authorization: `Bearer ${accessToken}`
           }
         });
-      console.log(response);
-      const mappedData = response.data.data.map((request, index) => ({
-        id: request.id,
-        student_id: request.student_id,
-        student_name: request.student.name,
-        offer_id: request.offer_id,
-        request_date: request.request_date,
-        notes: request.notes,
-        request_status: request.status,
+      // console.log(response);
+      const mappedData = response.data.map((student, index) => ({
+        id: index + 1,
+        offer_id: student.requests[0].offer_id,
+        student_id: student.requests[0].student_id,
+        student_name: student.name,
+        student_gpa: student.gpa,
+        student_major: student.major,
+        request_date: student.requests[0].request_date,
+        english_1_mark: student.english_1_mark,
+        english_2_mark: student.english_2_mark,
+        notes: student.requests[0].notes,
+        request_status: student.requests[0].status,
       }));
+      // console.log(mappedData);
       setOffersData(mappedData);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+
+  const handleCellClick = (params, event) => {
+    if (params.field === "editNote") {
+      handleEditNote(params.row);
+    }
+  };
+
+  const handleEditNote = async (params) => {
+    const studentName = params.student_name;
+    // console.log(studentName)
+    const { value: text } = await Swal.fire({
+      input: 'textarea',
+      inputLabel: `Note (${studentName})`,
+      inputPlaceholder: 'Type your note',
+      inputAttributes: {
+        'aria-label': 'Type your note here'
+      },
+      showCancelButton: true
+    })
+    if (text) {
+      Swal.fire(text)
+    }
+    await editNote(params, text);
+    getAppliedStudents();
+  }
+
+  const editNote = async (params, text) => {
+    try {
+      const response = await axios.post(`/offer/editNotes`,
+        {
+          offer_id: params.offer_id,
+          student_id: params.student_id,
+          notes: text
+        }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      // console.log(response)
+      return response.data.message;
     } catch (err) {
       console.error(err);
     }
@@ -229,6 +313,7 @@ const AppliedStudents = () => {
               }}
               autoHeight
               disableColumnMenu={true}
+              onCellClick={handleCellClick}
               rows={offersData}
               columns={columns}
               initialState={{

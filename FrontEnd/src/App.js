@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import Cookies from "universal-cookie";
 import { useContext, useEffect } from "react";
 import Login from "./login/Login";
+import ForgotPassword from './login/ForgotPassword';
+import ResetPassword from './login/ResetPassword';
 import Home from './student/pages/Home';
 import UnivRep from './univRepresentative/pages/UnivRep';
 import Protect from './protected/Protect';
@@ -22,6 +24,8 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="" element={<Login />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/resetPassword/:resetToken" element={<ResetPassword />} />
         <Route element={<Protect />} >
           <Route path="/home/*" element={<Home />} />
           <Route path="/universityRepresentative/*" element={<UnivRep />} />

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import {
   Sheet,
   FormControl,
@@ -8,13 +8,11 @@ import {
   Input,
   Button
 } from "@mui/joy";
-import Cookies from "universal-cookie";
+import Swal from "sweetalert2";
 import axios from "../api/axios";
 import { AccessTokenContext } from "../context/AccessTokenProvider";
 import './Login.css';
 import headerLogTop from '../images/headerLogTop.png';
-import { RoleContext } from "../context/RoleProvider";
-import { alignProperty } from "@mui/material/styles/cssUtils";
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -32,13 +30,14 @@ function ModeToggle() {
   );
 }
 
-const Login = () => {
+const ResetPassword = () => {
+  const { resetToken } = useParams();
   const [data, setData] = useState({});
-  const [loginError, setLoginError] = useState(false);
-  const { accessToken, setAccessToken } = useContext(AccessTokenContext);
-  const { role, setRole } = useContext(RoleContext);
+  const [isDone, setIsDone] = useState(false);
+  const [isValidToken, setIsValidToken] = useState(true);
+  const [passwordError, setPasswordError] = useState(false);
+  const { accessToken } = useContext(AccessTokenContext);
   const [mounted, setMounted] = useState(false);
-  const cookie = new Cookies();
 
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -47,22 +46,28 @@ const Login = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3500/auth/login',
+      await axios.post(`/user/resetPassword/${resetToken}`,
         JSON.stringify(data), {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      // console.log(response.data.role)
-      cookie.set('Role', response.data.role);
-      cookie.set('Bearer', response.data.accessToken);
-      const tokenCookie = cookie.get('Bearer');
-      const roleCookie = cookie.get('Role');
-      setAccessToken(tokenCookie);
-      setRole(roleCookie);
+      setPasswordError(false);
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 3000,
+        title: 'Password changed successfully!',
+        icon: 'success'
+      }).then(() => {
+        setIsDone(true);
+      });
     } catch (error) {
       if (error.response.status === 401) {
-        setLoginError(true);
+        setPasswordError(true);
+      } else if (error.response.status === 403) {
+        setIsValidToken(false);
       } else {
         console.error(error);
       }
@@ -85,8 +90,8 @@ const Login = () => {
 
   return (
     <>
-      {accessToken ? (
-        <Navigate to={role === 'Student' ? '/home/dashboard' : '/universityRepresentative/publishedOffers'} />
+      {accessToken || isDone ? (
+        <Navigate to={'/'} />
       ) : (
         <CssVarsProvider>
           <main>
@@ -110,11 +115,11 @@ const Login = () => {
                 <img src={headerLogTop} alt="headerTop-Logo" style={{ width: "100%" }} />
               </Link>
               <FormControl>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>New password</FormLabel>
                 <Input
-                  name="username"
-                  type="text"
-                  placeholder="m.s.abuhasan"
+                  name="newPassword"
+                  type="password"
+                  placeholder="new password"
                   onChange={handleInputChange}
                   autoComplete="off"
                   required
@@ -122,26 +127,26 @@ const Login = () => {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Confirm password</FormLabel>
                 <Input
-                  name="password"
+                  name="confirmPassword"
                   type="password"
-                  placeholder="password"
+                  placeholder="confirm password"
                   onChange={handleInputChange}
                   autoComplete="off"
                   required
                   onKeyPress={handleKeyPress}
                 />
               </FormControl>
-              {loginError && (
-                <p className="inputError">Incorrect username or password</p>
+              {!isValidToken && (
+                <p className="inputError">Token not valid</p>
+              )}
+              {passwordError && (
+                <p className="inputError">Please confirm new password</p>
               )}
               <Button style={{ backgroundColor: "#764abc", color: "white" }} onClick={onSubmit}>
-                Log in
+                Reset password
               </Button>
-              <Link to={"/forgotPassword"} style={{ color: "#764abc" }}>
-                Forgot password?
-              </Link>
             </Sheet>
           </main>
         </CssVarsProvider>
@@ -150,4 +155,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;

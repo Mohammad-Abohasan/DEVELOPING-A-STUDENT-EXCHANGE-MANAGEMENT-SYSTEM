@@ -6,7 +6,7 @@ const verifyJWT = require('../middleware/verifyJWT');
 // router.use(verifyJWT);
 
 router.post('/addNotes', offerController.addNotes);
-router.patch('/editNotes', offerController.editNotes);
+router.post('/editNotes', offerController.editNotes);
 
 router.get('/publishedOffers', offerController.viewPublishedOffers);
 router.get('/publishedOffers/:offerID', offerController.viewPublishedOfferDetails);
@@ -16,7 +16,8 @@ router.get('/archivedOffers', offerController.viewArchivedOffers);
 router.get('/archivedOffers/:offerID', offerController.viewArchivedOfferDetails);
 
 router.get('/studentList/:offerID', offerController.viewStudentList);
-router.get('/studentArchive', offerController.viewStudentArchive);
-router.get('/assignStudent', offerController.assignStudent);
+router.get('/studentArchive/:studentID', offerController.viewStudentArchive);
+router.get('/studentDetails/:studentID', offerController.viewStudentDetails);
+router.post('/assignStudent/:studentID/:offerID', offerController.assignStudent);
 
 module.exports = router;

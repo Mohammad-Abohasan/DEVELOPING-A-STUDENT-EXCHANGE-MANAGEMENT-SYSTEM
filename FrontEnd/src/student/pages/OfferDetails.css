@@ -1,25 +1,16 @@
 .offer-details {
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-}
-
-.offer-details-item {
-    padding: 20px;
-    border-bottom: 1px solid #eeeeee;
-}
-
-.offer-details-item:last-child {
-    border-bottom: none;
-}
-
-.offer-details h4 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.offer-details p {
-    font-size: 14px;
+    list-style-type: none;
+    padding: 0;
     margin: 0;
+}
+
+.offer-details-item h5 {
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.offer-details-item p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
 }

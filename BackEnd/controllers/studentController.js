@@ -374,22 +374,6 @@ const getInterestOffer = async (req, res) => {
     }
 }
 
-const viewStudentDetails = async (req, res) => {
-    try {
-        const studentID = req.body.student_id;
-        const student = await Student.findByPk({
-            where: {
-                student_id: studentID
-            }
-        });
-        res.status(200).json(student);
-    } catch (err) {
-        res.status(500).json({
-            'message': err.message
-        });
-    }
-};
-
 module.exports = {
     viewRequests,
     cancelRequest,
@@ -400,6 +384,5 @@ module.exports = {
     addInterest,
     updateInterest,
     cancelInterest,
-    getInterestOffer,
-    viewStudentDetails
+    getInterestOffer
 };

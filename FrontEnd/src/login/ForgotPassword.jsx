@@ -8,13 +8,12 @@ import {
   Input,
   Button
 } from "@mui/joy";
-import Cookies from "universal-cookie";
+import Swal from "sweetalert2";
+import ReCAPTCHA from "react-google-recaptcha";
 import axios from "../api/axios";
 import { AccessTokenContext } from "../context/AccessTokenProvider";
 import './Login.css';
 import headerLogTop from '../images/headerLogTop.png';
-import { RoleContext } from "../context/RoleProvider";
-import { alignProperty } from "@mui/material/styles/cssUtils";
 
 function ModeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -32,13 +31,13 @@ function ModeToggle() {
   );
 }
 
-const Login = () => {
+const ForgotPassword = () => {
   const [data, setData] = useState({});
-  const [loginError, setLoginError] = useState(false);
-  const { accessToken, setAccessToken } = useContext(AccessTokenContext);
-  const { role, setRole } = useContext(RoleContext);
+  const [usernameError, setUsernameError] = useState(false);
+  const [isDone, setIsDone] = useState(false);
+  const { accessToken } = useContext(AccessTokenContext);
   const [mounted, setMounted] = useState(false);
-  const cookie = new Cookies();
+  const [captchaResponse, setCaptchaResponse] = useState("");
 
   const handleInputChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -47,22 +46,30 @@ const Login = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3500/auth/login',
-        JSON.stringify(data), {
+      const formData = {
+        ...data,
+        "recaptchaResponse": captchaResponse,
+      };
+      await axios.post('/user/forgotPassword',
+        JSON.stringify(formData), {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      // console.log(response.data.role)
-      cookie.set('Role', response.data.role);
-      cookie.set('Bearer', response.data.accessToken);
-      const tokenCookie = cookie.get('Bearer');
-      const roleCookie = cookie.get('Role');
-      setAccessToken(tokenCookie);
-      setRole(roleCookie);
+      setUsernameError(false);
+      await Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 3000,
+        title: 'Password reset link has been sent to your email!',
+        icon: 'success'
+      }).then(() => {
+        setIsDone(true);
+      });
     } catch (error) {
       if (error.response.status === 401) {
-        setLoginError(true);
+        setUsernameError(true);
       } else {
         console.error(error);
       }
@@ -85,8 +92,8 @@ const Login = () => {
 
   return (
     <>
-      {accessToken ? (
-        <Navigate to={role === 'Student' ? '/home/dashboard' : '/universityRepresentative/publishedOffers'} />
+      {accessToken || isDone ? (
+        <Navigate to={'/'} />
       ) : (
         <CssVarsProvider>
           <main>
@@ -121,27 +128,16 @@ const Login = () => {
                   onKeyPress={handleKeyPress}
                 />
               </FormControl>
-              <FormControl>
-                <FormLabel>Password</FormLabel>
-                <Input
-                  name="password"
-                  type="password"
-                  placeholder="password"
-                  onChange={handleInputChange}
-                  autoComplete="off"
-                  required
-                  onKeyPress={handleKeyPress}
-                />
-              </FormControl>
-              {loginError && (
-                <p className="inputError">Incorrect username or password</p>
+              {usernameError && (
+                <p className="inputError">Incorrect username</p>
               )}
+              <ReCAPTCHA
+                sitekey={process.env.REACT_APP_SITE_KEY}
+                onChange={(response) => setCaptchaResponse(response)}
+              />
               <Button style={{ backgroundColor: "#764abc", color: "white" }} onClick={onSubmit}>
-                Log in
+                Send reset code
               </Button>
-              <Link to={"/forgotPassword"} style={{ color: "#764abc" }}>
-                Forgot password?
-              </Link>
             </Sheet>
           </main>
         </CssVarsProvider>
@@ -150,4 +146,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

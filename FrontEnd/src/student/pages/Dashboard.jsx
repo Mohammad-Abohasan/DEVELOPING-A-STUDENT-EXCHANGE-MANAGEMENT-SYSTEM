@@ -4,7 +4,7 @@ import AArUDash2 from '../../images/AArUDash2.jpg';
 const Dashboard = () => {
   return (
     <>
-      <h2 className="title-table pt-4 pb-2 px-3">DashBoard</h2>
+      <h2 className="title-table pt-4 pb-2 px-3">Dashboard</h2>
       <div id="carouselExampleIndicators" className="px-3 carousel slide">
         <div className="carousel-indicators">
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>

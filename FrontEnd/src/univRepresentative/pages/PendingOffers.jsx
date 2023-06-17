@@ -75,7 +75,7 @@ import {
       flex: 0.7
     },
     {
-      field: "apply",
+      field: "apply", // change
       headerName: "View students",
       renderCell: (params) =>
         <Link to={`/universityRepresentative/AppliedStudents/${params.id}`}className="btn btn-bg" style={{ backgroundColor: "#764abc", color: "white", width: "100%" }}>
