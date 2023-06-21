@@ -150,7 +150,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <Box sx={{ mx: 'auto', mt: 3, mb: 1 }}>
                     <Tooltip title={'m.s.abuhasan' || ''}>
                         <Avatar
-                            src={abohasanAvat}
+                            src={ abohasanAvat }
                             {...(open && { sx: { width: 100, height: 100 } })}
                         />
                     </Tooltip>
