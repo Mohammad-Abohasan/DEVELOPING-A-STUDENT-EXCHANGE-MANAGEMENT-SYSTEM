@@ -114,13 +114,13 @@ const sendEmail = (email, subject, text) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'mohammadExchStudents@gmail.com',
-            pass: 'fngefozjczeldfck'
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
     });
 
     const mailOptions = {
-        from: 'mohammadExchStudents@gmail.com',
+        from: process.env.EMAIL,
         to: email,
         subject: subject,
         text: text,
